@@ -2,753 +2,1635 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PermitPro — Demo Nestlé</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PermitPro | Certificado ACHS — Demo Comercial</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-  :root {
-    --blue-dark: #1F3864; --blue-mid: #2E75B6; --blue-light: #D5E8F0; --blue-accent: #4472C4;
-    --green: #375623; --green-light: #E2EFDA; --green-mid: #70AD47;
-    --orange: #C55A11; --orange-light: #FCE4D6;
-    --red: #C0392B; --red-light: #FDECEA;
-    --yellow: #F39C12; --yellow-light: #FEF9E7;
-    --gray-light: #F5F7FA; --gray-med: #E8ECF0; --gray-dark: #6B7280;
-    --white: #FFFFFF; --text: #1F2937; --text-light: #6B7280;
-    --nestle-red: #C8102E; --nestle-dark: #1A1A1A;
-    --sidebar-w: 240px; --header-h: 60px;
-    --shadow: 0 2px 8px rgba(0,0,0,0.10); --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-    --radius: 10px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--gray-light); color: var(--text); font-size: 14px; display: flex; height: 100vh; overflow: hidden; }
+:root{
+  --achs:#E31837;--achs-dark:#9B0E24;--navy:#0D1B3E;--blue:#1A56A0;--blue-lt:#EBF3FB;
+  --green:#00B04F;--green-lt:#E6F9EE;--green-dk:#007A35;
+  --orange:#F5A623;--orange-lt:#FFF4E0;
+  --red:#E31837;--red-lt:#FEE8EC;
+  --purple:#7C3AED;--purple-lt:#F3EFFE;
+  --gray:#64748B;--gray-lt:#F0F4F8;--gray-md:#E2E8F0;
+  --white:#fff;--text:#1E293B;--text-lt:#64748B;
+  --sw:258px;--hh:62px;
+  --sh:0 2px 12px rgba(0,0,0,.08);--shl:0 8px 32px rgba(0,0,0,.14);
+  --r:12px;--r2:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gray-lt);color:var(--text);font-size:14px;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
 
-  /* SIDEBAR */
-  #sidebar { width: var(--sidebar-w); background: var(--blue-dark); display: flex; flex-direction: column; height: 100vh; flex-shrink: 0; z-index: 100; }
-  .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .sidebar-logo .logo-text { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: 1px; }
-  .sidebar-logo .logo-sub { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; margin-top: 2px; }
-  .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
-  .nav-section { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; padding: 12px 20px 6px; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; color: rgba(255,255,255,0.7); transition: all 0.15s; border-left: 3px solid transparent; font-size: 13px; }
-  .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
-  .nav-item.active { background: rgba(255,255,255,0.12); color: #fff; border-left-color: #4FC3F7; }
-  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-  .nav-badge { margin-left: auto; background: #EF4444; color: #fff; border-radius: 10px; padding: 1px 7px; font-size: 10px; font-weight: 700; }
-  .sidebar-user { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-  .user-info { display: flex; align-items: center; gap: 10px; }
-  .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--blue-mid); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13px; flex-shrink: 0; }
-  .user-name { color: #fff; font-size: 12px; font-weight: 600; }
-  .user-role { color: rgba(255,255,255,0.5); font-size: 10px; }
+/* ── TOP PROMO BANNER ── */
+#promo{background:linear-gradient(90deg,var(--navy),var(--blue),var(--navy));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:18px;padding:5px 20px;flex-shrink:0;letter-spacing:.3px;}
+#promo .chip{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 12px;font-size:10px;}
+#promo .achs-chip{background:var(--achs);border-radius:20px;padding:2px 12px;font-size:10px;animation:pulse-bg 3s infinite;}
+@keyframes pulse-bg{0%,100%{opacity:1;}50%{opacity:.8;}}
 
-  /* MAIN */
-  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  #topbar { height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--gray-med); display: flex; align-items: center; padding: 0 24px; gap: 16px; flex-shrink: 0; }
-  .topbar-title { font-size: 17px; font-weight: 700; color: var(--blue-dark); flex: 1; }
-  .search-box { display: flex; align-items: center; gap: 8px; background: var(--gray-light); border: 1px solid var(--gray-med); border-radius: 8px; padding: 6px 12px; width: 280px; }
-  .search-box input { border: none; background: none; outline: none; font-size: 13px; color: var(--text); width: 100%; }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.15s; }
-  .btn-primary { background: var(--blue-mid); color: #fff; }
-  .btn-primary:hover { background: var(--blue-dark); }
-  .btn-success { background: var(--green-mid); color: #fff; }
-  .btn-danger { background: var(--red); color: #fff; }
-  .btn-outline { background: #fff; color: var(--blue-mid); border: 1px solid var(--blue-mid); }
-  .btn-nestle { background: var(--nestle-red); color: #fff; }
-  .btn-sm { padding: 5px 12px; font-size: 12px; }
-  .notif-btn { position: relative; background: none; border: none; cursor: pointer; font-size: 20px; color: var(--gray-dark); padding: 4px; }
-  .notif-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: #EF4444; border-radius: 50%; border: 2px solid #fff; }
-  #content { flex: 1; overflow-y: auto; padding: 24px; scrollbar-width: thin; }
-  #content::-webkit-scrollbar { width: 6px; }
-  #content::-webkit-scrollbar-thumb { background: var(--gray-med); border-radius: 3px; }
+.shell{display:flex;flex:1;overflow:hidden;}
 
-  .screen { display: none; }
-  .screen.active { display: block; }
+/* ── SIDEBAR ── */
+#sb{width:var(--sw);background:var(--navy);display:flex;flex-direction:column;height:100%;flex-shrink:0;position:relative;}
+#sb::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:linear-gradient(180deg,var(--achs),var(--achs-dark));}
+.sb-logo{padding:16px 18px 12px;border-bottom:1px solid rgba(255,255,255,.08);}
+.logo-row{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--achs),var(--achs-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(227,24,55,.4);}
+.logo-name{font-size:21px;font-weight:900;color:#fff;letter-spacing:-.5px;}
+.logo-tag{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;}
+.achs-badge{display:flex;align-items:center;gap:6px;margin-top:9px;background:rgba(227,24,55,.18);border:1px solid rgba(227,24,55,.35);border-radius:6px;padding:5px 10px;}
+.ab-dot{width:7px;height:7px;border-radius:50%;background:var(--achs);flex-shrink:0;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ab-text{font-size:9px;color:rgba(255,255,255,.75);font-weight:700;letter-spacing:.5px;}
+.sb-nav{flex:1;padding:10px 0;overflow-y:auto;scrollbar-width:none;}
+.sb-nav::-webkit-scrollbar{display:none;}
+.ns{font-size:9px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;padding:12px 18px 5px;}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 18px;cursor:pointer;color:rgba(255,255,255,.6);transition:all .15s;border-left:3px solid transparent;font-size:13px;user-select:none;}
+.ni:hover{background:rgba(255,255,255,.07);color:#fff;}
+.ni.active{background:rgba(255,255,255,.11);color:#fff;border-left-color:var(--achs);}
+.ni .ic{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
+.nbadge{margin-left:auto;background:var(--achs);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:800;}
+.nbadge.g{background:var(--green);}
+.sb-user{padding:13px 18px;border-top:1px solid rgba(255,255,255,.08);}
+.su-card{display:flex;align-items:center;gap:10px;}
+.su-av{width:37px;height:37px;border-radius:10px;background:linear-gradient(135deg,var(--achs),var(--achs-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0;box-shadow:0 3px 8px rgba(227,24,55,.4);}
+.su-name{color:#fff;font-size:12px;font-weight:800;}
+.su-role{color:rgba(255,255,255,.45);font-size:10px;margin-top:1px;}
+.su-online{display:flex;align-items:center;gap:4px;margin-top:3px;}
+.od{width:5px;height:5px;border-radius:50%;background:var(--green);}
+.ot{font-size:9px;color:var(--green);font-weight:700;}
 
-  /* CARDS */
-  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-  .kpi-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; border-top: 4px solid transparent; }
-  .kpi-card.green { border-top-color: var(--green-mid); }
-  .kpi-card.yellow { border-top-color: var(--yellow); }
-  .kpi-card.red { border-top-color: var(--red); }
-  .kpi-card.blue { border-top-color: var(--blue-mid); }
-  .kpi-icon { font-size: 28px; margin-bottom: 8px; }
-  .kpi-num { font-size: 36px; font-weight: 800; color: var(--blue-dark); line-height: 1; }
-  .kpi-label { font-size: 12px; color: var(--text-light); margin-top: 4px; font-weight: 500; }
-  .kpi-trend { font-size: 11px; margin-top: 8px; }
-  .kpi-trend.up { color: var(--green-mid); }
-  .kpi-trend.down { color: var(--red); }
-  .dash-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+/* ── MAIN ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#tb{height:var(--hh);background:#fff;border-bottom:1px solid var(--gray-md);display:flex;align-items:center;padding:0 22px;gap:12px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.tb-title{font-size:17px;font-weight:900;color:var(--navy);flex:1;}
+.tb-title em{color:var(--achs);font-style:normal;}
+.sb2{display:flex;align-items:center;gap:7px;background:var(--gray-lt);border:1.5px solid var(--gray-md);border-radius:9px;padding:7px 13px;width:250px;transition:border-color .15s;}
+.sb2:focus-within{border-color:var(--achs);}
+.sb2 input{border:none;background:none;outline:none;font-size:12px;color:var(--text);width:100%;}
+.clock-box{background:var(--gray-lt);border:1px solid var(--gray-md);border-radius:8px;padding:4px 11px;text-align:center;min-width:88px;}
+.ck-time{font-size:14px;font-weight:900;color:var(--navy);font-variant-numeric:tabular-nums;}
+.ck-date{font-size:9px;color:var(--text-lt);}
+.icon-btn{width:38px;height:38px;border-radius:8px;border:1.5px solid var(--gray-md);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;transition:border-color .15s;position:relative;}
+.icon-btn:hover{border-color:var(--achs);}
+.ibdot{position:absolute;top:-3px;right:-3px;width:15px;height:15px;background:var(--achs);border-radius:50%;font-size:9px;font-weight:900;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
+#ct{flex:1;overflow-y:auto;padding:18px 22px;scrollbar-width:thin;}
+#ct::-webkit-scrollbar{width:5px;}
+#ct::-webkit-scrollbar-thumb{background:var(--gray-md);border-radius:3px;}
 
-  /* TABLES */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; }
-  th { background: var(--blue-dark); color: #fff; padding: 10px 14px; font-size: 12px; text-align: left; font-weight: 600; }
-  td { padding: 10px 14px; border-bottom: 1px solid var(--gray-med); font-size: 13px; }
-  tr:hover td { background: var(--gray-light); }
+/* ── FOOTER ── */
+#ft{background:var(--navy);color:rgba(255,255,255,.45);font-size:10px;padding:6px 22px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;}
+.ft-copy{display:flex;align-items:center;gap:6px;}
+.ft-achs{color:var(--achs);font-weight:800;}
+.ft-links{display:flex;gap:14px;}
+.ft-links a{color:rgba(255,255,255,.35);text-decoration:none;cursor:pointer;}
+.ft-links a:hover{color:#fff;}
+.ft-cert{display:flex;align-items:center;gap:5px;background:rgba(227,24,55,.15);border:1px solid rgba(227,24,55,.3);border-radius:5px;padding:2px 9px;font-size:9px;color:rgba(255,255,255,.7);font-weight:700;}
 
-  /* BADGES */
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-  .badge-green { background: var(--green-light); color: var(--green); }
-  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
-  .badge-yellow { background: var(--yellow-light); color: #92610C; }
-  .badge-red { background: var(--red-light); color: var(--red); }
-  .badge-orange { background: var(--orange-light); color: var(--orange); }
-  .badge-gray { background: var(--gray-med); color: var(--gray-dark); }
-  .type-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
-  .type-alt { background: #EBF3FB; color: #1565C0; }
-  .type-esc { background: #FFF3E0; color: #E65100; }
-  .type-hot { background: #FFEBEE; color: #B71C1C; }
-  .type-ele { background: #F3E5F5; color: #6A1B9A; }
-  .type-exc { background: #FFFDE7; color: #F57F17; }
-  .type-ene { background: #E8F5E9; color: #1B5E20; }
+/* ── SCREENS ── */
+.sc{display:none;}.sc.active{display:block;}
 
-  /* ACTIVITY */
-  .activity-list { display: flex; flex-direction: column; gap: 0; }
-  .activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gray-med); }
-  .activity-item:last-child { border-bottom: none; }
-  .activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-  .activity-dot.green { background: var(--green-mid); }
-  .activity-dot.blue { background: var(--blue-mid); }
-  .activity-dot.red { background: var(--red); }
-  .activity-dot.yellow { background: var(--yellow); }
-  .activity-dot.orange { background: var(--orange); }
-  .activity-text { font-size: 12px; color: var(--text); line-height: 1.5; }
-  .activity-time { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+/* ── GLOBAL COMPONENTS ── */
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:18px;}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ct2{font-size:13px;font-weight:800;color:var(--navy);}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;}
+.bg-g{background:var(--green-lt);color:var(--green-dk);}
+.bg-b{background:var(--blue-lt);color:var(--blue);}
+.bg-y{background:var(--orange-lt);color:#8a5a00;}
+.bg-r{background:var(--red-lt);color:var(--red);}
+.bg-p{background:var(--purple-lt);color:var(--purple);}
+.bg-gr{background:var(--gray-md);color:var(--gray);}
+.bg-n{background:var(--navy);color:#fff;}
+.tp{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;}
+.tp-a{background:#EBF3FB;color:#1565C0;}
+.tp-h{background:#FFEBEE;color:#B71C1C;}
+.tp-e{background:#F3E5F5;color:#6A1B9A;}
+.tp-x{background:#FFFDE7;color:#F57F17;}
+.tp-c{background:#FFF3E0;color:#E65100;}
+.tp-n{background:#E8F5E9;color:#1B5E20;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:var(--r2);border:none;cursor:pointer;font-size:12px;font-weight:800;transition:all .15s;white-space:nowrap;}
+.bp{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;}
+.bp:hover{opacity:.9;transform:translateY(-1px);}
+.ba{background:linear-gradient(135deg,var(--achs),var(--achs-dark));color:#fff;box-shadow:0 4px 12px rgba(227,24,55,.3);}
+.ba:hover{opacity:.9;transform:translateY(-1px);}
+.bg2{background:linear-gradient(135deg,var(--green),var(--green-dk));color:#fff;}
+.bo{background:#fff;color:var(--navy);border:1.5px solid var(--gray-md);}
+.bo:hover{border-color:var(--navy);}
+.bd{background:var(--red);color:#fff;}
+.btn-sm{padding:5px 11px;font-size:11px;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--navy);color:#fff;padding:9px 13px;font-size:11px;text-align:left;font-weight:700;letter-spacing:.3px;}
+td{padding:9px 13px;border-bottom:1px solid var(--gray-md);font-size:12px;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#FAFBFF;}
+.fbar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.fsel{border:1.5px solid var(--gray-md);border-radius:var(--r2);padding:7px 11px;font-size:12px;color:var(--text);background:#fff;outline:none;cursor:pointer;}
+.fsel:focus{border-color:var(--achs);}
+.alert{border-radius:var(--r2);padding:9px 14px;margin-bottom:12px;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600;}
+.al-w{background:#FFF4E0;color:#7a5000;border:1px solid var(--orange);}
+.al-i{background:var(--blue-lt);color:var(--blue);border:1px solid #BFDBFE;}
+.al-s{background:var(--green-lt);color:var(--green-dk);border:1px solid #A7F3D0;}
+.al-d{background:var(--red-lt);color:var(--red);border:1px solid #FECACA;}
 
-  /* FILTER BAR */
-  .filter-bar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-  .filter-select { border: 1px solid var(--gray-med); border-radius: 8px; padding: 7px 12px; font-size: 13px; color: var(--text); background: #fff; outline: none; }
+/* ── KPI GRID ── */
+.kgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px;}
+.kc{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:16px 18px;position:relative;overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.kc:hover{transform:translateY(-2px);box-shadow:var(--shl);}
+.kc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.kc.kg::before{background:linear-gradient(90deg,var(--green),#52C41A);}
+.kc.kr::before{background:linear-gradient(90deg,var(--achs),var(--achs-dark));}
+.kc.ko::before{background:linear-gradient(90deg,var(--orange),#E08A00);}
+.kc.kb::before{background:linear-gradient(90deg,var(--blue),var(--navy));}
+.kc.kp::before{background:linear-gradient(90deg,var(--purple),#5B21B6);}
+.ki{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;}
+.ki.g{background:var(--green-lt);}
+.ki.r{background:var(--red-lt);}
+.ki.o{background:var(--orange-lt);}
+.ki.b{background:var(--blue-lt);}
+.ki.p{background:var(--purple-lt);}
+.knum{font-size:28px;font-weight:900;color:var(--navy);line-height:1;}
+.klbl{font-size:10px;color:var(--text-lt);margin-top:3px;font-weight:600;}
+.ktrend{font-size:10px;margin-top:5px;font-weight:700;}
+.ktrend.u{color:var(--green);}
+.ktrend.d{color:var(--red);}
 
-  /* SECTION HEADER */
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .section-title { font-size: 15px; font-weight: 700; color: var(--blue-dark); }
-  .chart-wrap { position: relative; height: 220px; }
-  .alert-banner { border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 13px; }
-  .alert-warning { background: var(--orange-light); color: var(--orange); border: 1px solid #F5CBA7; }
-  .alert-info { background: var(--blue-light); color: var(--blue-dark); border: 1px solid #AED6F1; }
-  .alert-success { background: var(--green-light); color: var(--green); border: 1px solid #ABEBC6; }
+/* ── DASHBOARD GRID ── */
+.dgrid{display:grid;grid-template-columns:1fr 320px;gap:16px;}
 
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal-box { background: #fff; border-radius: 14px; padding: 28px; max-width: 520px; width: 90%; box-shadow: var(--shadow-lg); transform: scale(0.95); transition: transform 0.2s; }
-  .modal-overlay.open .modal-box { transform: scale(1); }
-  .modal-title { font-size: 18px; font-weight: 700; color: var(--blue-dark); margin-bottom: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
-  label { font-size: 12px; font-weight: 600; color: var(--text-light); }
-  input[type=text], input[type=date], input[type=time], input[type=number], select, textarea {
-    border: 1px solid var(--gray-med); border-radius: 8px; padding: 9px 12px; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.15s; background: #fff; font-family: inherit; width: 100%;
-  }
-  input:focus, select:focus, textarea:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(46,117,182,0.1); }
-  textarea { resize: vertical; min-height: 70px; }
-  .required-mark { color: var(--red); }
+/* ── GPS MAP ── */
+.gps-wrap{background:#1c2d4a;border-radius:var(--r);overflow:hidden;position:relative;height:310px;}
+.gps-top{position:absolute;top:10px;left:12px;z-index:10;display:flex;gap:8px;align-items:center;}
+.gps-title{background:rgba(255,255,255,.92);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:800;color:var(--navy);}
+.gps-live{background:var(--green);color:#fff;border-radius:6px;padding:4px 10px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:4px;}
+.gps-live::before{content:'';width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1s infinite;}
+.gps-legend{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.93);border-radius:7px;padding:8px 12px;z-index:10;font-size:10px;}
+.gleg{display:flex;align-items:center;gap:5px;margin-bottom:3px;color:var(--text);font-weight:600;}
+.gleg:last-child{margin-bottom:0;}
+.gldot{width:9px;height:9px;border-radius:50%;}
+.gps-bottom{position:absolute;bottom:10px;left:12px;z-index:10;display:flex;gap:6px;}
+.gps-btn{background:rgba(255,255,255,.9);border:none;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:800;cursor:pointer;color:var(--navy);transition:all .15s;}
+.gps-btn:hover{background:#fff;}
+#pin-info{position:absolute;pointer-events:none;background:rgba(10,20,40,.92);color:#fff;font-size:11px;padding:7px 12px;border-radius:7px;z-index:30;display:none;min-width:160px;line-height:1.6;border-left:3px solid var(--achs);}
 
-  /* ===== NESTLÉ PERMIT FORM ===== */
-  .nestle-form { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; max-width: 960px; margin: 0 auto; }
+/* ── ACTIVITY FEED ── */
+.afeed{display:flex;flex-direction:column;}
+.afi{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--gray-md);}
+.afi:last-child{border-bottom:none;}
+.afidot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.afidot.g{background:var(--green);}
+.afidot.r{background:var(--red);}
+.afidot.o{background:var(--orange);}
+.afidot.b{background:var(--blue);}
+.afidot.p{background:var(--purple);}
+.afit{font-size:11px;color:var(--text);line-height:1.5;}
+.afim{font-size:10px;color:var(--text-lt);margin-top:1px;}
 
-  /* Nestlé Header */
-  .nestle-header { background: var(--white); border-bottom: 3px solid var(--nestle-red); padding: 16px 24px; display: flex; align-items: flex-start; gap: 20px; }
-  .nestle-logo-area { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 100px; }
-  .nestle-brand { font-size: 22px; font-weight: 900; color: var(--nestle-red); letter-spacing: -0.5px; }
-  .nestle-she { font-size: 11px; font-weight: 700; color: #333; letter-spacing: 2px; }
-  .nestle-title-area { flex: 1; }
-  .nestle-title { font-size: 20px; font-weight: 700; color: var(--nestle-dark); }
-  .nestle-subtitle { font-size: 11px; color: #555; margin-top: 4px; line-height: 1.4; }
-  .nestle-meta { display: flex; flex-direction: column; gap: 6px; min-width: 200px; }
-  .nestle-meta-row { display: flex; align-items: center; gap: 8px; }
-  .nestle-meta-label { font-size: 11px; font-weight: 600; color: #555; white-space: nowrap; }
-  .nestle-meta-input { border: none; border-bottom: 1.5px solid #999; padding: 2px 6px; font-size: 12px; outline: none; flex: 1; min-width: 80px; background: transparent; }
+/* ── SALES CTA ── */
+.scta{background:linear-gradient(135deg,var(--achs),var(--achs-dark));border-radius:var(--r);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;box-shadow:0 8px 24px rgba(227,24,55,.28);}
+.scta-t{color:#fff;font-size:15px;font-weight:900;}
+.scta-s{color:rgba(255,255,255,.8);font-size:11px;margin-top:2px;}
+.scta-btns{display:flex;gap:9px;}
+.cw{background:#fff;color:var(--achs);font-weight:900;border-radius:8px;padding:9px 18px;border:none;cursor:pointer;font-size:12px;transition:all .15s;}
+.cw:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.2);}
+.co{background:transparent;color:#fff;font-weight:700;border-radius:8px;padding:9px 18px;border:2px solid rgba(255,255,255,.45);cursor:pointer;font-size:12px;}
 
-  /* Form sections */
-  .nf-section { padding: 0 24px 16px; border-bottom: 1px solid var(--gray-med); }
-  .nf-section:last-child { border-bottom: none; }
-  .nf-section-header { background: var(--blue-dark); color: #fff; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; padding: 6px 24px; margin: 0 -24px 14px; }
-  .nf-section-header.red { background: var(--nestle-red); }
-  .nf-section-header.green { background: var(--green); }
-  .nf-section-header.orange { background: var(--orange); }
-  .nf-field-row { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
-  .nf-field { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 200px; }
-  .nf-field label { font-size: 11px; font-weight: 600; color: #555; }
-  .nf-field input, .nf-field select, .nf-field textarea { border: none; border-bottom: 1.5px solid #ccc; border-radius: 0; padding: 4px 2px; font-size: 13px; background: transparent; }
-  .nf-field input:focus, .nf-field select:focus, .nf-field textarea:focus { border-color: var(--blue-mid); box-shadow: none; }
-  .nf-field textarea { min-height: 50px; border: 1.5px solid #ccc; border-radius: 4px; padding: 6px; background: var(--gray-light); }
+/* ── MODAL ── */
+.mo{position:fixed;inset:0;background:rgba(5,15,35,.65);backdrop-filter:blur(5px);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.mo.open{opacity:1;pointer-events:all;}
+.mb{background:#fff;border-radius:16px;padding:26px;max-width:500px;width:92%;box-shadow:0 24px 64px rgba(0,0,0,.22);transform:scale(.95) translateY(8px);transition:transform .2s;}
+.mo.open .mb{transform:scale(1) translateY(0);}
+.mt{font-size:19px;font-weight:900;color:var(--navy);margin-bottom:2px;}
+.ms{font-size:11px;color:var(--text-lt);margin-bottom:18px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.frow.full{grid-template-columns:1fr;}
+.fld{display:flex;flex-direction:column;gap:4px;}
+.fld label{font-size:10px;font-weight:800;color:var(--text-lt);text-transform:uppercase;letter-spacing:.5px;}
+.fld input,.fld select,.fld textarea{border:1.5px solid var(--gray-md);border-radius:var(--r2);padding:8px 11px;font-size:12px;color:var(--text);outline:none;transition:border-color .15s;background:#fff;font-family:inherit;width:100%;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--achs);box-shadow:0 0 0 3px rgba(227,24,55,.1);}
+.fld textarea{resize:vertical;min-height:65px;}
 
-  /* Pre-permit checks table */
-  .check-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .check-table th { background: #f0f4f8; color: var(--text); padding: 6px 10px; font-size: 11px; border: 1px solid #ccc; text-align: center; }
-  .check-table td { padding: 5px 10px; border: 1px solid #ddd; vertical-align: top; }
-  .check-table .cat-cell { font-weight: 700; color: var(--blue-dark); background: #f8faff; font-size: 11px; text-align: center; vertical-align: middle; }
-  .check-table .desc-cell { font-size: 11px; line-height: 1.5; color: var(--text); }
-  .check-table .radio-cell { text-align: center; vertical-align: middle; }
-  .yn-group { display: flex; gap: 8px; justify-content: center; }
-  .yn-btn { width: 32px; height: 26px; border-radius: 4px; border: 1.5px solid #ccc; background: #fff; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.12s; color: #666; }
-  .yn-btn.active-si { background: var(--green-light); border-color: var(--green-mid); color: var(--green); }
-  .yn-btn.active-no { background: var(--red-light); border-color: var(--red); color: var(--red); }
-  .yn-btn.active-na { background: #f0f0f0; border-color: #999; color: #555; }
+/* ── PIN KEYPAD ── */
+.pin-wrap{text-align:center;padding:10px 0;}
+.pin-dots{display:flex;gap:9px;justify-content:center;margin-bottom:16px;}
+.pd{width:38px;height:46px;border:2px solid var(--gray-md);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:var(--navy);background:#fff;transition:all .15s;}
+.pd.f{border-color:var(--achs);background:var(--red-lt);color:var(--achs);}
+.pd.ok{border-color:var(--green);background:var(--green-lt);color:var(--green);}
+.pkp{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:220px;margin:0 auto;}
+.pk{height:46px;border:1.5px solid var(--gray-md);border-radius:9px;background:#fff;font-size:17px;font-weight:800;cursor:pointer;transition:all .1s;color:var(--navy);}
+.pk:hover{background:var(--gray-lt);border-color:var(--navy);}
+.pk:active{transform:scale(.95);}
+.pk.del{color:var(--red);}
 
-  /* Blood pressure table */
-  .bp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .bp-table th { background: var(--blue-dark); color: #fff; padding: 7px 10px; border: 1px solid #ccc; font-size: 11px; text-align: center; }
-  .bp-table td { padding: 4px 6px; border: 1px solid #ddd; }
-  .bp-table td input { border: none; border-bottom: 1px solid #ccc; width: 100%; padding: 2px 4px; font-size: 12px; background: transparent; outline: none; }
-  .bp-apto { display: flex; gap: 10px; justify-content: center; }
-  .bp-radio { display: flex; align-items: center; gap: 3px; font-size: 11px; cursor: pointer; }
-  .bp-radio input { width: auto; }
+/* ── SIGNATURE CANVAS ── */
+.sig-pad-wrap{border:2px dashed var(--gray-md);border-radius:9px;background:#FAFBFF;position:relative;cursor:crosshair;overflow:hidden;}
+.sig-pad-wrap canvas{display:block;}
+.sig-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-lt);pointer-events:none;}
+.sig-actions{display:flex;gap:7px;margin-top:7px;}
 
-  /* Checklist precautions */
-  .prec-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .prec-table th { background: #f0f4f8; color: var(--text); padding: 6px 10px; font-size: 11px; border: 1px solid #ccc; text-align: center; }
-  .prec-table td { padding: 5px 10px; border: 1px solid #ddd; vertical-align: top; }
-  .prec-table .cat-cell { font-weight: 700; color: var(--blue-dark); background: #f8faff; font-size: 11px; text-align: center; vertical-align: middle; }
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:2px solid var(--gray-md);margin-bottom:16px;}
+.tab{padding:9px 18px;cursor:pointer;font-size:12px;font-weight:700;color:var(--text-lt);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;}
+.tab:hover{color:var(--navy);}
+.tab.active{color:var(--achs);border-bottom-color:var(--achs);}
 
-  /* Signatures */
-  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .sig-box { border: 1.5px solid #ccc; border-radius: 6px; padding: 12px; }
-  .sig-box-title { font-weight: 700; color: var(--blue-dark); font-size: 12px; margin-bottom: 6px; }
-  .sig-box-desc { font-size: 10px; color: #666; line-height: 1.4; margin-bottom: 10px; font-style: italic; }
-  .sig-field-row { display: flex; gap: 12px; margin-top: 8px; }
-  .sig-field { flex: 1; }
-  .sig-field label { font-size: 10px; font-weight: 600; color: #555; display: block; margin-bottom: 2px; }
-  .sig-field input { border: none; border-bottom: 1.5px solid #999; width: 100%; font-size: 12px; padding: 3px 0; background: transparent; outline: none; }
+/* ── ADMIN SPECIFIC ── */
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+.sbox{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:14px 18px;border-left:4px solid var(--gray-md);}
+.sbox.a{border-left-color:var(--achs);}
+.sbox.g{border-left-color:var(--green);}
+.sbox.b{border-left-color:var(--blue);}
+.sbox.p{border-left-color:var(--purple);}
+.sv{font-size:26px;font-weight:900;color:var(--navy);}
+.sl{font-size:10px;color:var(--text-lt);margin-top:1px;font-weight:600;}
+.role-chip{display:inline-block;padding:2px 9px;border-radius:10px;font-size:10px;font-weight:800;}
+.rc-admin{background:#FEE2E2;color:#991B1B;}
+.rc-sup{background:#DBEAFE;color:#1E40AF;}
+.rc-req{background:#D1FAE5;color:#065F46;}
+.rc-con{background:#EDE9FE;color:#5B21B6;}
+.rc-aud{background:#FEF3C7;color:#92400E;}
 
-  /* Part 2 separator */
-  .part2-header { background: var(--blue-dark); color: #fff; text-align: center; font-size: 14px; font-weight: 700; padding: 10px; margin: 0 -24px; letter-spacing: 1px; }
+/* ── NESTLE FORM SPECIFIC ── */
+.nf{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;max-width:980px;margin:0 auto;}
+.nfhdr{background:#fff;border-bottom:3px solid var(--achs);padding:14px 22px;display:flex;align-items:flex-start;gap:18px;}
+.nfbrand{font-size:20px;font-weight:900;color:#C8102E;}
+.nfshe{font-size:9px;font-weight:700;color:#333;letter-spacing:2px;}
+.nftitle{font-size:18px;font-weight:900;color:#1a1a1a;}
+.nfsubt{font-size:10px;color:#666;margin-top:3px;line-height:1.4;}
+.nfmeta{display:flex;flex-direction:column;gap:5px;min-width:190px;}
+.nfml{font-size:10px;font-weight:700;color:#666;white-space:nowrap;}
+.nfmi{border:none;border-bottom:1.5px solid #ccc;padding:2px 5px;font-size:11px;outline:none;flex:1;min-width:80px;background:transparent;}
+.nfsec{padding:0 22px 12px;border-bottom:1px solid var(--gray-md);}
+.nfsh{font-size:10px;font-weight:900;letter-spacing:.6px;padding:6px 22px;margin:0 -22px 11px;color:#fff;}
+.nfsh.nav{background:var(--navy);}
+.nfsh.red{background:var(--achs);}
+.nfsh.grn{background:var(--green-dk);}
+.nfsh.ora{background:#B45309;}
+.nff{display:flex;flex-direction:column;gap:3px;flex:1;min-width:150px;}
+.nff label{font-size:9px;font-weight:800;color:#666;text-transform:uppercase;letter-spacing:.5px;}
+.nff input,.nff select,.nff textarea{border:none;border-bottom:1.5px solid #ccc;padding:3px 2px;font-size:11px;outline:none;transition:border-color .15s;background:transparent;font-family:inherit;width:100%;}
+.nff input:focus,.nff select:focus{border-color:var(--achs);}
+.nff textarea{min-height:45px;border:1.5px solid #ddd;border-radius:4px;padding:5px;background:#fafafa;font-size:11px;}
+.ctbl{width:100%;border-collapse:collapse;font-size:11px;}
+.ctbl th{background:#f0f4f8;color:var(--text);padding:5px 9px;font-size:10px;border:1px solid #ccc;text-align:center;}
+.ctbl td{padding:4px 9px;border:1px solid #ddd;vertical-align:top;}
+.ctbl .cat{font-weight:800;color:var(--navy);background:#f8faff;font-size:9px;text-align:center;vertical-align:middle;}
+.yng{display:flex;gap:5px;justify-content:center;}
+.yn{width:28px;height:22px;border-radius:3px;border:1.5px solid #ccc;background:#fff;cursor:pointer;font-size:9px;font-weight:800;transition:all .12s;color:#888;}
+.yn.si{background:var(--green-lt);border-color:var(--green);color:var(--green-dk);}
+.yn.na{background:#f0f0f0;border-color:#999;color:#555;}
+.bptbl{width:100%;border-collapse:collapse;font-size:11px;}
+.bptbl th{background:var(--navy);color:#fff;padding:6px 9px;border:1px solid #ccc;font-size:10px;text-align:center;}
+.bptbl td{padding:3px 5px;border:1px solid #ddd;}
+.bptbl td input{border:none;border-bottom:1px solid #ccc;width:100%;padding:2px 3px;font-size:10px;background:transparent;outline:none;}
+.sigbox{border:1.5px solid #ccc;border-radius:7px;padding:11px;}
+.sbt{font-weight:900;color:var(--navy);font-size:10px;margin-bottom:3px;}
+.sbd{font-size:9px;color:#888;line-height:1.4;margin-bottom:7px;font-style:italic;}
+.sfr{display:flex;gap:9px;margin-top:7px;}
+.sf label{font-size:9px;font-weight:700;color:#666;display:block;margin-bottom:1px;}
+.sf input{border:none;border-bottom:1.5px solid #ccc;width:100%;font-size:10px;padding:2px 0;background:transparent;outline:none;}
+.digi-btn{border:1.5px dashed #ccc;border-radius:6px;height:44px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-lt);cursor:pointer;background:#fafafa;transition:all .15s;gap:6px;}
+.digi-btn:hover{border-color:var(--achs);color:var(--achs);background:var(--red-lt);}
+.digi-btn.signed{border-color:var(--green);color:var(--green-dk);background:var(--green-lt);}
+.pt2bann{background:var(--navy);color:#fff;text-align:center;font-size:12px;font-weight:900;padding:9px;margin:0 -22px;letter-spacing:1px;}
+.nfref{font-size:9px;color:#aaa;text-align:right;padding:4px 22px;}
+.vstep{display:flex;align-items:center;background:#fff;border-radius:9px;box-shadow:var(--sh);padding:11px 18px;margin-bottom:16px;overflow-x:auto;gap:0;}
+.pst{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:75px;}
+.psc{width:26px;height:26px;border-radius:50%;border:2px solid var(--gray-md);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:var(--gray);background:#fff;}
+.pst.done .psc{background:var(--green);border-color:var(--green);color:#fff;}
+.pst.active .psc{background:var(--achs);border-color:var(--achs);color:#fff;}
+.psl{font-size:8px;color:var(--text-lt);text-align:center;font-weight:600;margin-top:2px;}
+.pst.active .psl{color:var(--achs);font-weight:900;}
+.pst.done .psl{color:var(--green);}
+.psline{flex:1;height:2px;background:var(--gray-md);min-width:14px;}
+.psline.done{background:var(--green);}
+.achs-stamp{display:inline-flex;align-items:center;gap:5px;background:var(--red-lt);border:1.5px solid var(--red);border-radius:5px;padding:3px 9px;font-size:10px;font-weight:900;color:var(--red);}
+.pdfbann{background:var(--navy);color:#fff;border-radius:8px;padding:9px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.pdfbt{font-size:11px;color:rgba(255,255,255,.7);}
+.pdfbt strong{font-size:13px;font-weight:900;color:#fff;display:block;}
 
-  /* Inspection visits table */
-  .insp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .insp-table th { background: var(--blue-dark); color: #fff; padding: 7px 10px; border: 1px solid #ccc; font-size: 11px; }
-  .insp-table td { padding: 6px 10px; border: 1px solid #ddd; height: 34px; }
-  .insp-table td input { border: none; width: 100%; font-size: 12px; background: transparent; outline: none; }
+/* ── CHART WRAP ── */
+.ch-wrap{position:relative;height:200px;}
 
-  /* Progress/stepper */
-  .permit-stepper { display: flex; align-items: center; gap: 0; background: var(--white); border-radius: 8px; box-shadow: var(--shadow); padding: 12px 20px; margin-bottom: 20px; overflow-x: auto; }
-  .pstep { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 90px; }
-  .pstep-circle { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--gray-med); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--gray-dark); background: #fff; }
-  .pstep.done .pstep-circle { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
-  .pstep.active .pstep-circle { background: var(--blue-mid); border-color: var(--blue-mid); color: #fff; }
-  .pstep-label { font-size: 9px; color: var(--text-light); text-align: center; font-weight: 500; }
-  .pstep.active .pstep-label { color: var(--blue-mid); font-weight: 700; }
-  .pstep.done .pstep-label { color: var(--green-mid); }
-  .pstep-line { flex: 1; height: 2px; background: var(--gray-med); min-width: 20px; }
-  .pstep-line.done { background: var(--green-mid); }
+/* ── ADMIN GAUGE ── */
+.gauge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.gg{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:14px;text-align:center;}
+.gg-val{font-size:24px;font-weight:900;color:var(--navy);}
+.gg-lbl{font-size:10px;color:var(--text-lt);margin-top:2px;font-weight:600;}
+.gg-bar{height:6px;background:var(--gray-md);border-radius:3px;margin-top:8px;overflow:hidden;}
+.gg-fill{height:100%;border-radius:3px;}
+.gg-fill.g{background:var(--green);}
+.gg-fill.r{background:var(--achs);}
+.gg-fill.b{background:var(--blue);}
+.gg-fill.o{background:var(--orange);}
 
-  /* Print/PDF preview banner */
-  .pdf-banner { background: var(--blue-dark); color: #fff; border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .pdf-banner-text { font-size: 12px; }
-  .pdf-banner strong { font-size: 14px; display: block; }
+/* ── NOTIFICATION PANEL ── */
+.nf-panel{position:absolute;top:calc(var(--hh) + 4px);right:22px;width:320px;background:#fff;border-radius:var(--r);box-shadow:var(--shl);z-index:500;border:1px solid var(--gray-md);display:none;}
+.nf-panel.show{display:block;}
+.nfp-hdr{padding:12px 16px;border-bottom:1px solid var(--gray-md);font-size:13px;font-weight:800;color:var(--navy);display:flex;align-items:center;justify-content:space-between;}
+.nfp-item{padding:11px 16px;border-bottom:1px solid var(--gray-md);display:flex;gap:10px;cursor:pointer;transition:background .15s;}
+.nfp-item:hover{background:var(--gray-lt);}
+.nfp-item:last-child{border-bottom:none;}
+.nfi-icon{font-size:20px;flex-shrink:0;}
+.nfi-title{font-size:12px;font-weight:700;color:var(--navy);}
+.nfi-sub{font-size:10px;color:var(--text-lt);margin-top:1px;}
 
-  /* Nestle code ref */
-  .nestle-ref { font-size: 10px; color: #999; text-align: right; padding: 4px 24px; }
+/* ── PROGRESS BAR ── */
+.prg-wrap{background:var(--gray-md);border-radius:10px;height:7px;overflow:hidden;}
+.prg-fill{height:100%;border-radius:10px;transition:width .5s;}
+.prg-fill.g{background:linear-gradient(90deg,var(--green),#52C41A);}
+.prg-fill.r{background:linear-gradient(90deg,var(--achs),var(--achs-dark));}
+.prg-fill.b{background:linear-gradient(90deg,var(--blue),var(--navy));}
 
-  /* Valid-until banner */
-  .valid-until { background: #FFF3CD; border: 1.5px solid #FBBF24; border-radius: 6px; padding: 7px 14px; margin-bottom: 14px; font-size: 12px; color: #92610C; display: flex; align-items: center; gap: 8px; }
+/* ── ROI COUNTER BANNER ── */
+.roi-strip{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:var(--r);padding:14px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;box-shadow:var(--shl);}
+.roi-item{text-align:center;}
+.roi-val{font-size:26px;font-weight:900;color:#fff;}
+.roi-lbl{font-size:9px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
 </style>
+
 </head>
 <body>
+<!-- PROMO BANNER -->
+<div id="promo">
+  <span>🛡 PermitPro — La plataforma N°1 de Permisos de Trabajo Digital en Chile</span>
+  <span class="chip">Versión 2.6 · Junio 2026</span>
+  <span class="achs-chip">✓ Certificado ACHS</span>
+  <span class="chip">Nestlé · Codelco · CMPC · Arauco</span>
+</div>
 
+<div class="shell">
 <!-- SIDEBAR -->
-<div id="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-text">🛡 PermitPro</div>
-    <div class="logo-sub">NESTLÉ · PREVENCIÓN DE RIESGOS</div>
+<div id="sb">
+  <div class="sb-logo">
+    <div class="logo-row">
+      <div class="logo-icon">PP</div>
+      <div><div class="logo-name">PermitPro</div><div class="logo-tag">Gestión Digital de PTS</div></div>
+    </div>
+    <div class="achs-badge">
+      <div class="ab-dot"></div>
+      <div class="ab-text">CERTIFICADO Y VALIDADO POR ACHS</div>
+    </div>
   </div>
-  <nav class="sidebar-nav">
-    <div class="nav-section">Principal</div>
-    <div class="nav-item active" onclick="navigate('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
-    <div class="nav-item" onclick="navigate('permisos')"><span class="nav-icon">📋</span> Permisos de Trabajo <span class="nav-badge">3</span></div>
-    <div class="nav-section">Gestión</div>
-    <div class="nav-item" onclick="navigate('nuevo')"><span class="nav-icon">➕</span> Nuevo Permiso PT Altura</div>
-    <div class="nav-item" onclick="navigate('contratistas')"><span class="nav-icon">🏢</span> Contratistas</div>
-    <div class="nav-section">Reportes</div>
-    <div class="nav-item" onclick="navigate('reportes')"><span class="nav-icon">📈</span> Reportes y Auditoría</div>
-    <div class="nav-item"><span class="nav-icon">⚙️</span> Configuración</div>
+  <nav class="sb-nav">
+    <div class="ns">Principal</div>
+    <div class="ni active" onclick="go('dashboard')"><span class="ic">📊</span>Dashboard<span class="nbadge g">3</span></div>
+    <div class="ni" onclick="go('permisos')"><span class="ic">📋</span>Permisos de Trabajo<span class="nbadge">2</span></div>
+    <div class="ns">Operaciones</div>
+    <div class="ni" onclick="go('nuevo')"><span class="ic">➕</span>Nuevo PT — Altura</div>
+    <div class="ni" onclick="go('contratistas')"><span class="ic">🏢</span>Contratistas</div>
+    <div class="ns">Análisis</div>
+    <div class="ni" onclick="go('reportes')"><span class="ic">📈</span>Reportes y Auditoría</div>
+    <div class="ns">Administración</div>
+    <div class="ni" onclick="go('admin')"><span class="ic">⚙️</span>Panel Admin</div>
+    <div class="ni" onclick="go('admin')"><span class="ic">👥</span>Usuarios y Roles</div>
+    <div class="ni" onclick="go('admin')"><span class="ic">📑</span>Plantillas Checklist</div>
+    <div class="ni" onclick="showModal('upgradeModal')"><span class="ic">⭐</span>Plan Enterprise<span class="nbadge" style="background:var(--orange)">PRO</span></div>
   </nav>
-  <div class="sidebar-user">
-    <div class="user-info">
-      <div class="user-avatar">JS</div>
-      <div><div class="user-name">Juan Sepúlveda</div><div class="user-role">Emisor de Permiso · SSOMA</div></div>
+  <div class="sb-user">
+    <div class="su-card">
+      <div class="su-av">BS</div>
+      <div>
+        <div class="su-name">Branco Sandoval</div>
+        <div class="su-role">Experto en Prevención · SSOMA</div>
+        <div class="su-online"><div class="od"></div><div class="ot">En línea</div></div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- MAIN -->
 <div id="main">
-  <div id="topbar">
-    <div class="topbar-title" id="topbar-title">Dashboard</div>
-    <div class="search-box"><span>🔍</span><input type="text" placeholder="Buscar permiso, área, contratista…"></div>
-    <button class="notif-btn" onclick="showModal('notifModal')">🔔<span class="notif-dot"></span></button>
+  <div id="tb">
+    <div class="tb-title" id="tb-title">Dashboard <em>· Nestlé Chile S.A.</em></div>
+    <div class="sb2"><span>🔍</span><input type="text" placeholder="Buscar PT, área, contratista…"></div>
+    <div class="clock-box"><div class="ck-time" id="clk">--:--:--</div><div class="ck-date" id="clkd">--/--/----</div></div>
+    <button class="icon-btn" onclick="toggleNotif()">🔔<span class="ibdot">3</span></button>
+    <button class="icon-btn" onclick="showModal('helpModal')">❓</button>
+    <button class="btn ba btn-sm" onclick="showModal('demoModal')">📞 Solicitar Demo</button>
+    <!-- Notification Panel -->
+    <div class="nf-panel" id="notifPanel">
+      <div class="nfp-hdr"><span>Notificaciones</span><button class="btn bo btn-sm" onclick="toggleNotif()">✕</button></div>
+      <div class="nfp-item"><div class="nfi-icon">⚠️</div><div><div class="nfi-title">PT-0089 vence en 1h 20min</div><div class="nfi-sub">Trabajo en Altura · Planta Norte · Hace 8 min</div></div></div>
+      <div class="nfp-item"><div class="nfi-icon">📋</div><div><div class="nfi-title">PT-0092 esperando revisión</div><div class="nfi-sub">CivTec Obras · Hace 31 min</div></div></div>
+      <div class="nfp-item"><div class="nfi-icon">🏢</div><div><div class="nfi-title">TecnoServ: habilitación vence en 22 días</div><div class="nfi-sub">Alerta automática del sistema · Ayer</div></div></div>
+    </div>
   </div>
 
-  <div id="content">
+  <div id="ct">
 
-    <!-- ====== DASHBOARD ====== -->
-    <div class="screen active" id="screen-dashboard">
-      <div class="alert-banner alert-warning">
-        <span>⚠️</span><strong>2 permisos activos vencen en menos de 2 horas.</strong> Revisar y extender si corresponde.
-        <span style="margin-left:auto;cursor:pointer;opacity:0.6" onclick="this.parentElement.remove()">✕</span>
+  <!-- ══════════════════════════════════════
+       SCREEN: DASHBOARD
+  ══════════════════════════════════════ -->
+  <div class="sc active" id="sc-dashboard">
+    <div class="alert al-w" style="margin-bottom:14px">
+      <span>⚠️</span><strong>2 permisos activos vencen en menos de 2 horas</strong> — revise y extienda si las condiciones lo permiten.
+      <span style="margin-left:auto;cursor:pointer;opacity:.5" onclick="this.parentElement.remove()">✕</span>
+    </div>
+
+    <!-- ROI STRIP -->
+    <div class="roi-strip">
+      <div class="roi-item"><div class="roi-val" data-target="83" data-suffix="%">0%</div><div class="roi-lbl">Reducción HH por PT</div></div>
+      <div class="roi-item"><div class="roi-val" data-target="142" data-suffix="">0</div><div class="roi-lbl">PT emitidos este mes</div></div>
+      <div class="roi-item"><div class="roi-val" data-target="18" data-suffix=" min">0 min</div><div class="roi-lbl">Tiempo prom. aprobación</div></div>
+      <div class="roi-item"><div class="roi-val" data-target="94" data-suffix="%">0%</div><div class="roi-lbl">Cerrados a tiempo</div></div>
+    </div>
+
+    <!-- KPI GRID -->
+    <div class="kgrid">
+      <div class="kc kg"><div class="ki g">🟢</div><div class="knum" data-target="8">0</div><div class="klbl">Permisos Activos HOY</div><div class="ktrend u">↑ +2 vs ayer</div></div>
+      <div class="kc ko"><div class="ki o">⏳</div><div class="knum" data-target="3">0</div><div class="klbl">Pendientes Aprobación</div><div class="ktrend d">⚠ >30 min en cola</div></div>
+      <div class="kc kr"><div class="ki r">🔴</div><div class="knum" data-target="1">0</div><div class="klbl">Vencidos Sin Cerrar</div><div class="ktrend d">Acción inmediata</div></div>
+      <div class="kc kb"><div class="ki b">✅</div><div class="knum" data-target="24">0</div><div class="klbl">Completados Semana</div><div class="ktrend u">↑ 92% a tiempo</div></div>
+      <div class="kc kp"><div class="ki p">🏢</div><div class="knum" data-target="5">0</div><div class="klbl">Contratistas Activos</div><div class="ktrend u">↑ Todos habilitados</div></div>
+    </div>
+
+    <div class="dgrid">
+      <div>
+        <!-- GPS MAP -->
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+          <div style="padding:12px 16px 0;display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:13px;font-weight:800;color:var(--navy)">📍 Mapa en Tiempo Real — Planta Nestlé Los Andes</div>
+            <div class="achs-stamp">✓ ACHS Certified Zone</div>
+          </div>
+          <div class="gps-wrap">
+            <div class="gps-top">
+              <div class="gps-title">🗺 Vista Planta</div>
+              <div class="gps-live">GPS LIVE</div>
+            </div>
+            <div class="gps-legend">
+              <div style="font-size:10px;font-weight:800;color:var(--navy);margin-bottom:5px">PERMISOS</div>
+              <div class="gleg"><div class="gldot" style="background:#00B04F"></div>Activo</div>
+              <div class="gleg"><div class="gldot" style="background:#F5A623"></div>En Revisión</div>
+              <div class="gleg"><div class="gldot" style="background:#1A56A0"></div>Aprobado</div>
+              <div class="gleg"><div class="gldot" style="background:#E31837"></div>Vencido</div>
+            </div>
+            <svg id="gpsMap" width="100%" height="310" viewBox="0 0 720 310" xmlns="http://www.w3.org/2000/svg" style="display:block;cursor:pointer">
+              <!-- Ground -->
+              <rect width="720" height="310" fill="#1c2d4a"/>
+              <!-- Grid lines -->
+              <line x1="0" y1="155" x2="720" y2="155" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <line x1="360" y1="0" x2="360" y2="310" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <!-- Roads -->
+              <rect x="170" y="0" width="22" height="310" fill="#162238" rx="0"/>
+              <rect x="0" y="130" width="720" height="18" fill="#162238" rx="0"/>
+              <!-- Dashed road markings -->
+              <line x1="181" y1="10" x2="181" y2="120" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="8,6"/>
+              <line x1="181" y1="158" x2="181" y2="300" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="8,6"/>
+              <line x1="20" y1="139" x2="160" y2="139" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="8,6"/>
+              <line x1="202" y1="139" x2="710" y2="139" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="8,6"/>
+              <!-- Building: Planta Norte -->
+              <rect x="210" y="15" width="160" height="105" fill="#243656" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="290" y="52" fill="rgba(255,255,255,.8)" font-size="10" font-weight="700" text-anchor="middle">PLANTA NORTE</text>
+              <text x="290" y="66" fill="rgba(255,255,255,.4)" font-size="8" text-anchor="middle">Línea 1·2·3</text>
+              <!-- Building: Sala Caldera -->
+              <rect x="390" y="15" width="110" height="80" fill="#2a3a52" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="445" y="50" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" text-anchor="middle">SALA CALDERA</text>
+              <text x="445" y="63" fill="rgba(255,255,255,.4)" font-size="8" text-anchor="middle">B1 · B2</text>
+              <!-- Building: Subestación -->
+              <rect x="520" y="15" width="85" height="80" fill="#1f3148" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="562" y="50" fill="rgba(255,255,255,.8)" font-size="8" font-weight="700" text-anchor="middle">SUBEST.</text>
+              <text x="562" y="63" fill="rgba(255,255,255,.4)" font-size="8" text-anchor="middle">Principal</text>
+              <!-- Building: Tanques -->
+              <rect x="615" y="15" width="90" height="80" fill="#243656" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="660" y="50" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" text-anchor="middle">TANQUES</text>
+              <text x="660" y="63" fill="rgba(255,255,255,.4)" font-size="8" text-anchor="middle">TK-01-05</text>
+              <!-- Building: Bodega -->
+              <rect x="210" y="162" width="120" height="80" fill="#243656" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="270" y="197" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" text-anchor="middle">BODEGA</text>
+              <text x="270" y="210" fill="rgba(255,255,255,.4)" font-size="8" text-anchor="middle">Almacén Central</text>
+              <!-- Building: Patio Maniobras -->
+              <rect x="345" y="162" width="155" height="80" fill="#2a3a52" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="422" y="197" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" text-anchor="middle">PATIO MANIOBRAS</text>
+              <text x="422" y="210" fill="rgba(255,255,255,.4)" font-size="8" text-anchor="middle">Zona Carga/Descarga</text>
+              <!-- Building: Sala Bombas -->
+              <rect x="515" y="162" width="90" height="80" fill="#1f3148" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="560" y="197" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" text-anchor="middle">SALA</text>
+              <text x="560" y="210" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" text-anchor="middle">BOMBAS</text>
+              <!-- Building: Portería -->
+              <rect x="10" y="162" width="65" height="40" fill="#1a2e48" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="42" y="187" fill="rgba(255,255,255,.7)" font-size="8" font-weight="700" text-anchor="middle">PORTERÍA</text>
+              <!-- Building: Estacionamiento -->
+              <rect x="615" y="162" width="90" height="80" fill="#18283e" stroke="#2a3850" stroke-width="1" rx="3"/>
+              <text x="660" y="197" fill="rgba(255,255,255,.4)" font-size="9" font-weight="700" text-anchor="middle">ESTAC.</text>
+              <!-- Building: Oficinas -->
+              <rect x="10" y="210" width="145" height="90" fill="#1e3452" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="82" y="250" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" text-anchor="middle">OFICINAS</text>
+              <text x="82" y="263" fill="rgba(255,255,255,.4)" font-size="8" text-anchor="middle">Admin · SSOMA · SHE</text>
+              <!-- Building: Nave Industrial -->
+              <rect x="345" y="255" width="265" height="50" fill="#243656" stroke="#344a6e" stroke-width="1.5" rx="3"/>
+              <text x="477" y="285" fill="rgba(255,255,255,.7)" font-size="9" font-weight="700" text-anchor="middle">NAVE INDUSTRIAL</text>
+
+              <!-- GPS PINS with pulse animation -->
+              <!-- PT-0089 ACTIVE (green) - Planta Norte -->
+              <g id="pin-0089" class="gps-pin" data-pt="PT-2026-0089" data-tipo="Trabajo en Altura" data-area="Planta Norte – Línea 3" data-estado="Activo" data-hora="Vence 13:30 ⚠" style="cursor:pointer" onclick="clickPin(event,'PT-2026-0089','Trabajo en Altura','Planta Norte – Línea 3','ACTIVO','⚠ Vence 13:30')">
+                <circle cx="280" cy="68" r="18" fill="#00B04F" opacity=".15" class="pulse-anim"/>
+                <circle cx="280" cy="68" r="11" fill="#00B04F" opacity=".3"/>
+                <circle cx="280" cy="68" r="7" fill="#00B04F"/>
+                <text x="280" y="71" fill="#fff" font-size="7" font-weight="900" text-anchor="middle">0089</text>
+              </g>
+              <!-- PT-0090 ACTIVE (green) - Sala Caldera -->
+              <g class="gps-pin" style="cursor:pointer" onclick="clickPin(event,'PT-2026-0090','Hot Work – Soldadura','Sala Caldera B2','ACTIVO','Vence 15:00')">
+                <circle cx="440" cy="55" r="15" fill="#00B04F" opacity=".15" class="pulse-anim" style="animation-delay:.5s"/>
+                <circle cx="440" cy="55" r="9" fill="#00B04F" opacity=".3"/>
+                <circle cx="440" cy="55" r="6" fill="#00B04F"/>
+                <text x="440" y="58" fill="#fff" font-size="7" font-weight="900" text-anchor="middle">0090</text>
+              </g>
+              <!-- PT-0091 APPROVED (blue) - Subestación -->
+              <g class="gps-pin" style="cursor:pointer" onclick="clickPin(event,'PT-2026-0091','Trabajo Eléctrico','Subestación Principal','APROBADO','Vence 16:30')">
+                <circle cx="557" cy="55" r="13" fill="#1A56A0" opacity=".2"/>
+                <circle cx="557" cy="55" r="6" fill="#1A56A0"/>
+                <text x="557" y="58" fill="#fff" font-size="7" font-weight="900" text-anchor="middle">0091</text>
+              </g>
+              <!-- PT-0092 REVIEW (orange) - Patio Maniobras -->
+              <g class="gps-pin" style="cursor:pointer" onclick="clickPin(event,'PT-2026-0092','Excavación','Patio de Maniobras','EN REVISIÓN','Vence 17:00')">
+                <circle cx="420" cy="202" r="14" fill="#F5A623" opacity=".25" class="pulse-anim" style="animation-delay:1s"/>
+                <circle cx="420" cy="202" r="7" fill="#F5A623"/>
+                <text x="420" y="205" fill="#fff" font-size="7" font-weight="900" text-anchor="middle">0092</text>
+              </g>
+              <!-- PT-0085 EXPIRED (red) - Tanques -->
+              <g class="gps-pin" style="cursor:pointer" onclick="clickPin(event,'PT-2026-0085','Espacio Confinado','Tanque TK-04','⚠ VENCIDO','VENCIÓ 08:00')">
+                <circle cx="658" cy="55" r="16" fill="#E31837" opacity=".2" class="pulse-anim" style="animation-delay:.3s"/>
+                <circle cx="658" cy="55" r="9" fill="#E31837" opacity=".4"/>
+                <circle cx="658" cy="55" r="6" fill="#E31837"/>
+                <text x="658" y="58" fill="#fff" font-size="7" font-weight="900" text-anchor="middle">0085</text>
+              </g>
+              <!-- Compass -->
+              <g transform="translate(690,270)">
+                <circle r="16" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+                <text y="-6" fill="rgba(255,255,255,.8)" font-size="9" font-weight="900" text-anchor="middle">N</text>
+                <line y1="0" y2="-10" stroke="var(--achs)" stroke-width="2"/>
+                <line y1="0" y2="10" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+              </g>
+              <!-- Scale bar -->
+              <g transform="translate(30,285)">
+                <rect width="60" height="3" fill="rgba(255,255,255,.4)" rx="1"/>
+                <text x="30" y="-3" fill="rgba(255,255,255,.5)" font-size="8" text-anchor="middle">50 m</text>
+              </g>
+            </svg>
+            <div id="pin-info"></div>
+            <div class="gps-bottom">
+              <button class="gps-btn" onclick="go('nuevo')">➕ Nuevo PT</button>
+              <button class="gps-btn" onclick="go('permisos')">📋 Ver todos</button>
+              <button class="gps-btn" onclick="centerMap()">⌖ Centrar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVE PERMITS TABLE -->
+        <div class="card">
+          <div class="ch">
+            <div class="ct2">Permisos en curso ahora</div>
+            <button class="btn bo btn-sm" onclick="go('permisos')">Ver todos →</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>N° PT</th><th>Tipo</th><th>Área</th><th>Contratista</th><th>Emisor</th><th>Vence</th><th>Estado</th><th></th></tr></thead>
+              <tbody>
+                <tr style="cursor:pointer" onclick="go('nuevo')">
+                  <td><strong style="color:var(--blue)">PT-2026-0089</strong></td>
+                  <td><span class="tp tp-a">🪜 Altura</span></td>
+                  <td>Planta Norte – Línea 3</td>
+                  <td>Manuales Ltda.</td>
+                  <td><strong>B. Sandoval</strong></td>
+                  <td><span style="color:var(--red);font-weight:700">⚠ 13:30</span></td>
+                  <td><span class="badge bg-g">● Activo</span></td>
+                  <td><button class="btn ba btn-sm" onclick="event.stopPropagation();go('nuevo')">Ver PT</button></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--blue)">PT-2026-0090</strong></td>
+                  <td><span class="tp tp-h">🔥 Hot Work</span></td>
+                  <td>Sala Caldera – B2</td>
+                  <td>TecnoServ S.A.</td>
+                  <td><strong>B. Sandoval</strong></td>
+                  <td>15:00</td>
+                  <td><span class="badge bg-g">● Activo</span></td>
+                  <td><button class="btn bo btn-sm">Ver PT</button></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--blue)">PT-2026-0091</strong></td>
+                  <td><span class="tp tp-e">⚡ Eléctrico</span></td>
+                  <td>Subestación</td>
+                  <td>Elecrom Chile</td>
+                  <td>R. Díaz</td>
+                  <td>16:30</td>
+                  <td><span class="badge bg-b">● Aprobado</span></td>
+                  <td><button class="btn bo btn-sm">Ver PT</button></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--blue)">PT-2026-0092</strong></td>
+                  <td><span class="tp tp-x">⛏ Excavación</span></td>
+                  <td>Patio Maniobras</td>
+                  <td>CivTec Obras</td>
+                  <td>R. Díaz</td>
+                  <td>17:00</td>
+                  <td><span class="badge bg-y">⏳ En Revisión</span></td>
+                  <td><button class="btn bo btn-sm">Revisar</button></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--blue)">PT-2026-0085</strong></td>
+                  <td><span class="tp tp-c">🕳 Esp. Confinado</span></td>
+                  <td>Tanque TK-04</td>
+                  <td>Manuales Ltda.</td>
+                  <td><strong>B. Sandoval</strong></td>
+                  <td><span style="color:var(--red);font-weight:700">⚠ VENCIDO</span></td>
+                  <td><span class="badge bg-r">⚠ Vencido</span></td>
+                  <td><button class="btn bd btn-sm" onclick="showModal('suspendModal')">Atender</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-      <div class="kpi-grid">
-        <div class="kpi-card green"><div class="kpi-icon">🟢</div><div class="kpi-num">8</div><div class="kpi-label">Permisos Activos Hoy</div><div class="kpi-trend up">↑ +2 vs ayer</div></div>
-        <div class="kpi-card yellow"><div class="kpi-icon">⏳</div><div class="kpi-num">3</div><div class="kpi-label">Pendientes Aprobación</div><div class="kpi-trend down">⚠ Más de 30 min en cola</div></div>
-        <div class="kpi-card red"><div class="kpi-icon">🔴</div><div class="kpi-num">1</div><div class="kpi-label">Vencidos Sin Cerrar</div><div class="kpi-trend down">Requiere acción inmediata</div></div>
-        <div class="kpi-card blue"><div class="kpi-icon">✅</div><div class="kpi-num">24</div><div class="kpi-label">Completados Esta Semana</div><div class="kpi-trend up">↑ 92% cerrados a tiempo</div></div>
+
+      <!-- RIGHT COLUMN -->
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ch"><div class="ct2">Actividad en tiempo real</div><span class="badge bg-g">● Live</span></div>
+          <div class="afeed">
+            <div class="afi"><div class="afidot g"></div><div><div class="afit"><strong>PT-0090</strong> aprobado por <strong>B. Sandoval</strong></div><div class="afim">Hace 8 min · Firma digital OK</div></div></div>
+            <div class="afi"><div class="afidot b"></div><div><div class="afit"><strong>PT-0091</strong> enviado por P. Morales (Elecrom)</div><div class="afim">Hace 24 min</div></div></div>
+            <div class="afi"><div class="afidot r"></div><div><div class="afit"><strong>PT-0089</strong> próximo a vencer — alerta enviada</div><div class="afim">Hace 36 min</div></div></div>
+            <div class="afi"><div class="afidot r"></div><div><div class="afit"><strong>PT-0088</strong> <span style="color:var(--red)">rechazado</span> — área sin señalizar</div><div class="afim">Hace 1h 12min</div></div></div>
+            <div class="afi"><div class="afidot g"></div><div><div class="afit"><strong>PT-0087</strong> cerrado conforme · B. Sandoval</div><div class="afim">Hace 2h 8min</div></div></div>
+            <div class="afi"><div class="afidot o"></div><div><div class="afit"><strong>Habilitación vencida</strong> — C. Núñez bloqueado</div><div class="afim">Ayer 18:32 · Sistema automático</div></div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="ct2" style="margin-bottom:10px">Distribución por Estado</div>
+          <div class="ch-wrap"><canvas id="chartEstado"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="ct2" style="margin-bottom:12px">Cumplimiento ACHS</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Checklists completados</span><strong>94%</strong></div><div class="prg-wrap"><div class="prg-fill g" style="width:94%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>PT con doble firma</span><strong>100%</strong></div><div class="prg-wrap"><div class="prg-fill b" style="width:100%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Habilitaciones vigentes</span><strong>87%</strong></div><div class="prg-wrap"><div class="prg-fill o" style="width:87%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Cierre a tiempo</span><strong>92%</strong></div><div class="prg-wrap"><div class="prg-fill g" style="width:92%"></div></div></div>
+          </div>
+        </div>
       </div>
-      <div class="dash-grid">
+    </div>
+  </div><!-- end dashboard -->
+
+  <!-- ══════════════════════════════════════
+       SCREEN: PERMISOS
+  ══════════════════════════════════════ -->
+  <div class="sc" id="sc-permisos">
+    <div class="fbar">
+      <select class="fsel"><option>Todos los estados</option><option>Activo</option><option>Aprobado</option><option>En Revisión</option><option>Completado</option><option>Rechazado</option></select>
+      <select class="fsel"><option>Todos los tipos</option><option>Trabajo en Altura</option><option>Hot Work</option><option>Eléctrico</option><option>Espacio Confinado</option><option>Excavación</option></select>
+      <select class="fsel"><option>Todas las áreas</option><option>Planta Norte</option><option>Sala Caldera</option><option>Subestación</option><option>Patio Maniobras</option></select>
+      <input type="date" class="fsel" value="2026-06-03">
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn bo btn-sm">⬇ Excel</button>
+        <button class="btn bo btn-sm">⬇ PDF</button>
+        <button class="btn ba" onclick="go('nuevo')">➕ Nuevo PT Altura</button>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>N° Permiso</th><th>Tipo</th><th>Descripción</th><th>Área</th><th>Contratista</th><th>Emisor</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr style="cursor:pointer" onclick="go('nuevo')">
+            <td><strong style="color:var(--blue)">PT-2026-0089</strong></td>
+            <td><span class="tp tp-a">🪜 Altura</span></td>
+            <td>Cambio luminaria pasillo norte</td>
+            <td>Planta Norte – Línea 3</td>
+            <td>Manuales Ltda.</td>
+            <td><strong>B. Sandoval</strong></td>
+            <td>03/06/2026</td>
+            <td><span class="badge bg-g">● Activo</span></td>
+            <td><button class="btn ba btn-sm" onclick="event.stopPropagation();go('nuevo')">Ver PT</button></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--blue)">PT-2026-0090</strong></td>
+            <td><span class="tp tp-h">🔥 Hot Work</span></td>
+            <td>Soldadura estructural techo</td>
+            <td>Sala Caldera B2</td>
+            <td>TecnoServ S.A.</td>
+            <td><strong>B. Sandoval</strong></td>
+            <td>03/06/2026</td>
+            <td><span class="badge bg-g">● Activo</span></td>
+            <td><button class="btn bo btn-sm">Ver PDF</button></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--blue)">PT-2026-0091</strong></td>
+            <td><span class="tp tp-e">⚡ Eléctrico</span></td>
+            <td>Mantención tablero distribución</td>
+            <td>Subestación Principal</td>
+            <td>Elecrom Chile</td>
+            <td>R. Díaz</td>
+            <td>03/06/2026</td>
+            <td><span class="badge bg-b">✓ Aprobado</span></td>
+            <td><button class="btn bo btn-sm">Ver PDF</button></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--blue)">PT-2026-0092</strong></td>
+            <td><span class="tp tp-x">⛏ Excavación</span></td>
+            <td>Instalación cañería agua</td>
+            <td>Patio de Maniobras</td>
+            <td>CivTec Obras</td>
+            <td>R. Díaz</td>
+            <td>03/06/2026</td>
+            <td><span class="badge bg-y">⏳ En Revisión</span></td>
+            <td><button class="btn bp btn-sm">Revisar</button></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--blue)">PT-2026-0085</strong></td>
+            <td><span class="tp tp-c">🕳 Esp. Confinado</span></td>
+            <td>Limpieza interior tanque TK-04</td>
+            <td>Tanque TK-04</td>
+            <td>Manuales Ltda.</td>
+            <td><strong>B. Sandoval</strong></td>
+            <td>02/06/2026</td>
+            <td><span class="badge bg-r">⚠ Vencido</span></td>
+            <td><button class="btn bd btn-sm">Cerrar</button></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--blue)">PT-2026-0083</strong></td>
+            <td><span class="tp tp-n">🔋 Energías Pel.</span></td>
+            <td>Bloqueo LOTO bomba P-03</td>
+            <td>Sala Bombas</td>
+            <td>IndService Ltda.</td>
+            <td><strong>B. Sandoval</strong></td>
+            <td>02/06/2026</td>
+            <td><span class="badge bg-gr">✓ Completado</span></td>
+            <td><button class="btn bo btn-sm">Ver PDF</button></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--blue)">PT-2026-0081</strong></td>
+            <td><span class="tp tp-a">🪜 Altura</span></td>
+            <td>Inspección cubierta sector A</td>
+            <td>Techo Nave Industrial</td>
+            <td>CivTec Obras</td>
+            <td>R. Díaz</td>
+            <td>01/06/2026</td>
+            <td><span class="badge bg-r">✕ Rechazado</span></td>
+            <td><button class="btn bo btn-sm">Ver motivo</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="padding-top:12px;display:flex;align-items:center;justify-content:space-between;color:var(--text-lt);font-size:11px">
+        <span>Mostrando 7 de 142 permisos</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn bo btn-sm">← Anterior</button>
+          <button class="btn bp btn-sm">Siguiente →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN: NUEVO PT — NESTLÉ REC-SHE-02-02
+  ══════════════════════════════════════ -->
+  <div class="sc" id="sc-nuevo">
+    <div class="vstep">
+      <div class="pst done"><div class="psc">✓</div><div class="psl">Predicción<br>de Riesgo</div></div>
+      <div class="psline done"></div>
+      <div class="pst active"><div class="psc">2</div><div class="psl">Llenado<br>del PT</div></div>
+      <div class="psline"></div>
+      <div class="pst"><div class="psc">3</div><div class="psl">Medidas<br>Previas</div></div>
+      <div class="psline"></div>
+      <div class="pst"><div class="psc">4</div><div class="psl">Emisión y<br>Aceptación</div></div>
+      <div class="psline"></div>
+      <div class="pst"><div class="psc">5</div><div class="psl">Ejecución</div></div>
+      <div class="psline"></div>
+      <div class="pst"><div class="psc">6</div><div class="psl">Cierre<br>del PT</div></div>
+    </div>
+    <div class="pdfbann">
+      <div class="pdfbt"><strong>PT-2026-0089 · Trabajo en Altura · Planta Norte Línea 3</strong>REC-SHE-02-02 · Versión 2.0 · Nestlé Chile S.A.</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="achs-stamp">✓ ACHS Validated</span>
+        <button class="btn bo btn-sm" style="color:#fff;border-color:rgba(255,255,255,.4)">⬇ Vista PDF</button>
+        <button class="btn bg2 btn-sm" onclick="showModal('emitirModal')">✓ Emitir PTS</button>
+      </div>
+    </div>
+    <div class="nf">
+      <div class="nfhdr">
         <div>
-          <div class="card" style="margin-bottom:20px">
-            <div class="section-header">
-              <div class="section-title">Permisos Activos Ahora</div>
-              <button class="btn btn-outline btn-sm" onclick="navigate('permisos')">Ver todos</button>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>N° PT</th><th>Tipo</th><th>Área</th><th>Contratista</th><th>Vence</th><th>Estado</th><th></th></tr></thead>
-                <tbody>
-                  <tr style="cursor:pointer" onclick="navigate('nuevo')"><td><strong>PT-2026-0089</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Planta Norte – Línea 3</td><td>Manuales Ltda.</td><td><span style="color:var(--red)">⚠ 13:30</span></td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();navigate('nuevo')">Ver PT</button></td></tr>
-                  <tr style="cursor:pointer"><td><strong>PT-2026-0090</strong></td><td><span class="type-pill type-hot">🔥 Hot Work</span></td><td>Sala Caldera – B2</td><td>TecnoServ S.A.</td><td>15:00</td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-outline btn-sm">Ver PT</button></td></tr>
-                  <tr style="cursor:pointer"><td><strong>PT-2026-0091</strong></td><td><span class="type-pill type-ele">⚡ Eléctrico</span></td><td>Subestación Principal</td><td>Elecrom Chile</td><td>16:30</td><td><span class="badge badge-blue">● Aprobado</span></td><td><button class="btn btn-outline btn-sm">Ver PT</button></td></tr>
-                  <tr style="cursor:pointer"><td><strong>PT-2026-0092</strong></td><td><span class="type-pill type-exc">⛏ Excavación</span></td><td>Patio de Maniobras</td><td>CivTec Obras</td><td>17:00</td><td><span class="badge badge-yellow">● En Revisión</span></td><td><button class="btn btn-outline btn-sm">Ver PT</button></td></tr>
-                  <tr style="cursor:pointer"><td><strong>PT-2026-0085</strong></td><td><span class="type-pill type-esc">🕳 Esp. Confinado</span></td><td>Tanque TK-04</td><td>Manuales Ltda.</td><td><span style="color:var(--red)">⚠ VENCIDO</span></td><td><span class="badge badge-red">● Vencido</span></td><td><button class="btn btn-danger btn-sm">Atender</button></td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card"><div class="section-header"><div class="section-title">Permisos por Tipo — Últimos 30 días</div></div><div class="chart-wrap"><canvas id="chartTipo"></canvas></div></div>
+          <div class="nfbrand">Nestlé</div>
+          <div class="nfshe">SHE · SAFETY HEALTH ENVIRONMENT</div>
         </div>
-        <div>
-          <div class="card" style="margin-bottom:20px">
-            <div class="section-title" style="margin-bottom:14px">Actividad Reciente</div>
-            <div class="activity-list">
-              <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-text"><strong>PT-0090</strong> aprobado por <strong>J. Sepúlveda</strong></div><div class="activity-time">Hace 12 min</div></div></div>
-              <div class="activity-item"><div class="activity-dot blue"></div><div><div class="activity-text"><strong>PT-0091</strong> enviado por <strong>P. Morales</strong> (Elecrom)</div><div class="activity-time">Hace 28 min</div></div></div>
-              <div class="activity-item"><div class="activity-dot orange"></div><div><div class="activity-text"><strong>PT-0089</strong> próximo a vencer — alerta enviada</div><div class="activity-time">Hace 35 min</div></div></div>
-              <div class="activity-item"><div class="activity-dot red"></div><div><div class="activity-text"><strong>PT-0088</strong> <span style="color:var(--red)">rechazado</span> — área sin señalizar</div><div class="activity-time">Hace 1h 10min</div></div></div>
-              <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-text"><strong>PT-0087</strong> cerrado conforme por <strong>R. Díaz</strong></div><div class="activity-time">Hace 2h 5min</div></div></div>
-            </div>
-          </div>
-          <div class="card"><div class="section-title" style="margin-bottom:14px">Distribución por Estado</div><div class="chart-wrap" style="height:180px"><canvas id="chartEstado"></canvas></div></div>
+        <div style="flex:1">
+          <div class="nftitle">Permiso de trabajo: Trabajos en altura</div>
+          <div class="nfsubt">Este permiso es obligatorio para cualquier trabajo donde una persona pueda caer más de 1,8 mts.</div>
+        </div>
+        <div class="nfmeta">
+          <div style="display:flex;align-items:center;gap:7px"><span class="nfml">N° PTS (folio)</span><input class="nfmi" value="PT-2026-0089"></div>
+          <div style="display:flex;align-items:center;gap:7px"><span class="nfml">Fecha emisión</span><input class="nfmi" value="03/06/2026"></div>
+          <div style="display:flex;align-items:center;gap:7px"><span class="nfml">Hora emisión</span><input class="nfmi" value="08:45"></div>
         </div>
       </div>
+      <div style="padding:9px 22px 0">
+        <div style="background:#FFF9E6;border:1.5px solid var(--orange);border-radius:6px;padding:6px 13px;font-size:11px;color:#7a5000;display:flex;align-items:center;gap:7px">
+          <span>⏰</span><strong>Este permiso no es válido después de:</strong>
+          <input type="text" style="border:none;border-bottom:1.5px solid var(--orange);outline:none;font-size:11px;padding:1px 5px;background:transparent;width:180px" value="03/06/2026 – 17:00 hrs">
+        </div>
+      </div>
+      <!-- Ubicación y Descripción -->
+      <div class="nfsec" style="padding-top:12px">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:9px">
+          <div class="nff" style="flex:2"><label>Ubicación del trabajo (especificar tanto como sea posible)</label><input value="Planta Norte – Línea 3, Pasillo Norte entre columnas A-7 y A-12. Altura: 6 metros."></div>
+        </div>
+        <div style="display:flex;gap:14px">
+          <div class="nff" style="flex:2"><label>Descripción del trabajo</label><textarea>Reemplazo de 4 luminarias LED en pasillo norte. Se utilizará andamio tubular certificado. Altura máxima de trabajo: 6 metros. Empresa: Manuales Ltda.</textarea></div>
+        </div>
+      </div>
+      <!-- Predicción de Riesgo -->
+      <div class="nfsec">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:8px 0;font-size:11px">
+          <div style="display:flex;align-items:center;gap:7px"><strong>¿Predicción de riesgo completa y revisada?</strong>
+            <button class="yn si" onclick="yt(this)">Sí</button><button class="yn" onclick="yt(this)">No</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:7px"><strong>N° predicción:</strong>
+            <input type="text" style="border:none;border-bottom:1.5px solid #ccc;width:110px;font-size:11px;outline:none;padding:2px 3px;background:transparent" value="PR-2026-112">
+          </div>
+          <div style="display:flex;align-items:center;gap:7px"><strong>¿Se informó a la Autoridad del área?</strong>
+            <button class="yn si" onclick="yt(this)">Sí</button><button class="yn" onclick="yt(this)">No</button>
+          </div>
+        </div>
+      </div>
+      <!-- CHECKLIST PREVIO -->
+      <div class="nfsec">
+        <div class="nfsh nav">MEDIDAS TOMADAS PREVIAS AL PERMISO (Revisión de equipamiento, herramientas, trabajos preliminares, EPP establecidos y revisados)</div>
+        <table class="ctbl">
+          <thead><tr><th style="width:110px">Categoría</th><th>Verificación</th><th style="width:45px">Sí</th><th style="width:45px">N/A</th></tr></thead>
+          <tbody>
+            <tr><td class="cat" rowspan="7">Área de trabajo y acceso</td><td style="font-size:10px;padding:4px 8px">Capacidad de carga del área confirmada y claramente etiquetada.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Área equipada con rodapié, baranda a altura de rodilla y pasamano en todos los bordes.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Andamio móvil armado por trabajadores capacitados y revisado por persona competente. Tarjetas verde/roja incorporadas.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Escaleras de acceso revisadas y en condición segura de trabajo.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Plataforma estable y fija. Techumbre seca, sin rocío ni lluvia.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Plataformas elevadoras inspeccionadas formalmente en los últimos 6 meses. Check List diario incorporado.</td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn na" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Áreas a nivel de piso demarcadas con barreras temporales y señalización de advertencia.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td class="cat" rowspan="3">Protección debajo del trabajo</td><td style="font-size:10px;padding:4px 8px">Protecciones o redes de seguridad para evitar caída de material instaladas.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Al trabajar con escaleras, una persona afirma la escalera desde abajo.</td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn na" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Conducto de vaciado para material de desecho instalado.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td class="cat" rowspan="2">Emergencia</td><td style="font-size:10px;padding:4px 8px">Plan de rescate acordado y comunicado, incluido cómo llamar por ayuda.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">Equipo de rescate adecuado disponible en el lugar.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td class="cat">Capacidad trabajador</td><td style="font-size:10px;padding:4px 8px">Trabajadores son competentes para realizar las actividades de forma segura.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- CONTROL PRESIÓN ARTERIAL -->
+      <div class="nfsec">
+        <div class="nfsh nav" style="text-align:center">CONTROL DE PRESIÓN ARTERIAL</div>
+        <table class="bptbl">
+          <thead><tr><th style="width:35px">N°</th><th>Nombre del Trabajador</th><th style="width:130px">RUT</th><th style="width:90px">Presión</th><th style="width:110px">Apto</th></tr></thead>
+          <tbody>
+            <tr><td style="text-align:center;font-size:10px;color:#999">1</td><td><input value="Carlos Muñoz Reyes" placeholder="Nombre completo"></td><td><input value="15.234.567-8"></td><td><input value="120/80"></td><td style="text-align:center"><label style="font-size:10px;margin-right:6px"><input type="radio" name="a1" checked> Sí</label><label style="font-size:10px"><input type="radio" name="a1"> No</label></td></tr>
+            <tr><td style="text-align:center;font-size:10px;color:#999">2</td><td><input value="Luis Vargas Torres" placeholder="Nombre completo"></td><td><input value="12.987.654-3"></td><td><input value="118/75"></td><td style="text-align:center"><label style="font-size:10px;margin-right:6px"><input type="radio" name="a2" checked> Sí</label><label style="font-size:10px"><input type="radio" name="a2"> No</label></td></tr>
+            <tr><td style="text-align:center;font-size:10px;color:#999">3</td><td><input value="Ana Fuentes Soto" placeholder="Nombre completo"></td><td><input value="16.543.210-K"></td><td><input value="122/78"></td><td style="text-align:center"><label style="font-size:10px;margin-right:6px"><input type="radio" name="a3" checked> Sí</label><label style="font-size:10px"><input type="radio" name="a3"> No</label></td></tr>
+            <tr><td style="text-align:center;font-size:10px;color:#999">4</td><td><input placeholder="Nombre completo"></td><td><input placeholder="RUT"></td><td><input placeholder="SIS/DIA"></td><td style="text-align:center"><label style="font-size:10px;margin-right:6px"><input type="radio" name="a4"> Sí</label><label style="font-size:10px"><input type="radio" name="a4"> No</label></td></tr>
+            <tr><td style="text-align:center;font-size:10px;color:#999">5</td><td><input placeholder="Nombre completo"></td><td><input placeholder="RUT"></td><td><input placeholder="SIS/DIA"></td><td style="text-align:center"><label style="font-size:10px;margin-right:6px"><input type="radio" name="a5"> Sí</label><label style="font-size:10px"><input type="radio" name="a5"> No</label></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:9px;display:flex;gap:14px">
+          <div class="nff"><label>Nombre Paramédico</label><input value="Pamela Riquelme (Enfermera SHE)"></div>
+          <div class="nff" style="flex:2"><label>Medidas adicionales previas al permiso (incluir Check List LOTO si aplica)</label><textarea>Verificación estructura andamio por persona competente. Demarcación perímetro con valla roja. Coordinación con Jefe de Producción.</textarea></div>
+        </div>
+      </div>
+      <!-- PRECAUCIONES DURANTE -->
+      <div class="nfsec">
+        <div class="nfsh red">PRECAUCIONES REQUERIDAS DURANTE EL TRABAJO (Forma segura de trabajo · Utilizar EPP)</div>
+        <table class="ctbl">
+          <thead><tr><th style="width:110px">Categoría</th><th>Precaución</th><th style="width:45px">Sí</th><th style="width:45px">N/A</th></tr></thead>
+          <tbody>
+            <tr><td class="cat" rowspan="3">Moverse y trabajar</td><td style="font-size:10px;padding:4px 8px">Seguir procedimientos definidos para moverse a través de superficies en altura. Utilizar pasarela sobre techos frágiles.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">No subir o encaramarse en las barandas.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px">No lanzar ni dejar caer material. Usar conductos de vaciado.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td class="cat">Cerrar aberturas</td><td style="font-size:10px;padding:4px 8px">Cubrir inmediatamente cualquier abertura. Asegurar cubiertas para que no se resbalen.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td class="cat" rowspan="2">EPP</td><td style="font-size:10px;padding:4px 8px">Casco con barbiquejo, zapatos de seguridad, antiparras, protector solar (si aplica).</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td style="font-size:10px;padding:4px 8px"><strong style="color:var(--red)">Arnés de seguridad con 2 cabos de vida. OBLIGATORIO.</strong></td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+            <tr><td class="cat">Finalización</td><td style="font-size:10px;padding:4px 8px">Sacar a todas las personas, herramientas y materiales de altura antes de cerrar.</td><td style="text-align:center"><div class="yng"><button class="yn si" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px"><div class="nff"><label>Precauciones adicionales y EPP requeridos</label><textarea>Protector auditivo durante uso de taladro. Sistema de comunicación radial entre trabajadores en altura y vigía a nivel de piso.</textarea></div></div>
+      </div>
+      <!-- CERTIFICACIÓN Y ACEPTACIÓN -->
+      <div class="nfsec">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="sigbox">
+            <div class="sbt">CERTIFICACIÓN por el Emisor de Permiso de trabajo</div>
+            <div class="sbd">Yo certifico que: a) He visitado el área de trabajo; b) Los controles establecidos permitirán realizar el trabajo de forma segura; c) Las medidas previas han sido implementadas; d) La Autoridad comprende los controles.</div>
+            <div class="sfr"><div class="sf" style="flex:1"><label>Nombre (Imprenta)</label><input value="Branco Sandoval Pizarro"></div></div>
+            <div class="sfr">
+              <div class="sf" style="flex:2">
+                <label>Firma Digital</label>
+                <div class="digi-btn" id="sig-emisor" onclick="showModal('firmaModal','emisor')">✏ Firmar digitalmente</div>
+              </div>
+              <div class="sf" style="flex:1"><label>Fecha y hora</label><input value="03/06/2026 08:45"></div>
+            </div>
+          </div>
+          <div class="sigbox">
+            <div class="sbt">ACEPTACIÓN por la Autoridad en Realización</div>
+            <div class="sbd">Yo certifico que supervisaré personalmente el trabajo: a) dentro de los límites descritos; b) los controles son seguidos; c) todos comprenden los riesgos; d) cualquier cambio detiene el trabajo.</div>
+            <div class="sfr"><div class="sf" style="flex:1"><label>Nombre (Imprenta)</label><input value="Pedro Morales Castro"></div></div>
+            <div class="sfr">
+              <div class="sf" style="flex:2">
+                <label>Firma Digital</label>
+                <div class="digi-btn" id="sig-autoridad" onclick="showModal('firmaModal','autoridad')">✏ Firmar digitalmente</div>
+              </div>
+              <div class="sf" style="flex:1"><label>Fecha y hora</label><input value="03/06/2026 08:52"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- VISITAS INSPECCIÓN -->
+      <div class="nfsec">
+        <div class="nfsh nav" style="text-align:center">VISITAS DE INSPECCIÓN (Durante el trabajo)</div>
+        <table style="font-size:11px;border-collapse:collapse;width:100%">
+          <thead><tr><th style="background:#f0f4f8;color:var(--text);padding:6px 9px;border:1px solid #ccc;font-size:10px;font-weight:700;width:150px">Nombre</th><th style="background:#f0f4f8;color:var(--text);padding:6px 9px;border:1px solid #ccc;font-size:10px;font-weight:700;width:70px">Hora</th><th style="background:#f0f4f8;color:var(--text);padding:6px 9px;border:1px solid #ccc;font-size:10px;font-weight:700;width:100px">Firma</th><th style="background:#f0f4f8;color:var(--text);padding:6px 9px;border:1px solid #ccc;font-size:10px;font-weight:700">Comentarios</th></tr></thead>
+          <tbody>
+            <tr><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" value="B. Sandoval"></td><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" value="10:30"></td><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" value="[Digital]"></td><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" value="Conforme. Arneses bien instalados."></td></tr>
+            <tr><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" placeholder="Nombre"></td><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" placeholder="HH:MM"></td><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" placeholder="Firma"></td><td style="border:1px solid #ddd;padding:3px 6px"><input type="text" style="border:none;width:100%;font-size:10px;outline:none;background:transparent" placeholder="Comentarios…"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- PARTE 2 -->
+      <div class="pt2bann">PARTE 2 — Completar cuando se ha terminado el trabajo</div>
+      <div class="nfsec" style="padding-top:12px">
+        <div class="nfsh ora">MEDIDAS POSTERIORES AL PERMISO (Trabajos finales · Dejar el área segura)</div>
+        <table class="ctbl">
+          <thead><tr><th style="width:110px">Restablecimiento</th><th>Medida</th><th style="width:45px">Sí</th><th style="width:45px">N/A</th></tr></thead>
+          <tbody>
+            <tr><td class="cat">Área</td><td style="font-size:10px;padding:4px 8px">Sacar barreras temporales a nivel de piso.</td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">Sí</button></div></td><td style="text-align:center"><div class="yng"><button class="yn" onclick="yt(this)">N/A</button></div></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px"><div class="nff"><label>Medidas posteriores adicionales</label><textarea placeholder="Describa medidas adicionales de cierre…"></textarea></div></div>
+      </div>
+      <div class="nfsec">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="sigbox" style="border-color:var(--green)">
+            <div class="sbt" style="color:var(--green-dk)">CIERRE por parte del Emisor de PTS</div>
+            <div class="sbd">Declaro este PTS cerrado. No se realizarán más trabajos en altura.</div>
+            <div class="sfr"><div class="sf" style="flex:1"><label>Nombre</label><input placeholder="Nombre Emisor"></div></div>
+            <div class="sfr">
+              <div class="sf" style="flex:2"><label>Firma Digital de Cierre</label><div class="digi-btn" id="sig-cierre" onclick="showModal('firmaModal','cierre')">✏ Firmar cierre</div></div>
+              <div class="sf" style="flex:1"><label>Fecha y hora</label><input placeholder="DD/MM/YYYY HH:MM"></div>
+            </div>
+          </div>
+          <div class="sigbox" style="border-color:var(--green)">
+            <div class="sbt" style="color:var(--green-dk)">CONOCIMIENTO — Autoridad en Realización</div>
+            <div class="sbd">Estoy en conocimiento que este PTS ya no es válido. Área entregada conforme.</div>
+            <div class="sfr"><div class="sf" style="flex:1"><label>Nombre</label><input placeholder="Nombre Autoridad"></div></div>
+            <div class="sfr">
+              <div class="sf" style="flex:2"><label>Firma Digital</label><div class="digi-btn" id="sig-conoc" onclick="showModal('firmaModal','conoc')">✏ Firmar conocimiento</div></div>
+              <div class="sf" style="flex:1"><label>Fecha y hora</label><input placeholder="DD/MM/YYYY HH:MM"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nfref">Entregar Original a SHE · Copia Azul al Emisor · Copia Amarilla para Autoridad de Realización · REC-SHE-02-02 · Versión 2.0 – 10/2016</div>
+      <div style="padding:14px 22px;background:var(--gray-lt);border-top:1px solid var(--gray-md);display:flex;gap:9px;justify-content:flex-end">
+        <button class="btn bo" onclick="go('permisos')">← Volver</button>
+        <button class="btn bo">💾 Guardar Borrador</button>
+        <button class="btn ba" onclick="showModal('emitirModal')">✓ Emitir y Aceptar PTS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN: ADMIN PANEL
+  ══════════════════════════════════════ -->
+  <div class="sc" id="sc-admin">
+    <div class="scta">
+      <div><div class="scta-t">🛡 Panel de Administración — Nestlé Chile S.A.</div><div class="scta-s">Acceso completo al sistema · PermitPro Enterprise · Certificado ACHS · v2.6.0</div></div>
+      <div class="scta-btns">
+        <button class="cw" onclick="showModal('upgradeModal')">⭐ Ver Plan Enterprise</button>
+        <button class="co" onclick="showModal('demoModal')">📞 Soporte Técnico</button>
+      </div>
+    </div>
+    <div class="gauge-grid">
+      <div class="gg"><div class="gg-val" style="color:var(--green)">142</div><div class="gg-lbl">PT Emitidos este mes</div><div class="gg-bar"><div class="gg-fill g" style="width:71%"></div></div></div>
+      <div class="gg"><div class="gg-val" style="color:var(--blue)">18</div><div class="gg-lbl">Usuarios activos</div><div class="gg-bar"><div class="gg-fill b" style="width:72%"></div></div></div>
+      <div class="gg"><div class="gg-val" style="color:var(--achs)">5</div><div class="gg-lbl">Contratistas registrados</div><div class="gg-bar"><div class="gg-fill r" style="width:100%"></div></div></div>
+      <div class="gg"><div class="gg-val" style="color:var(--orange)">99.8%</div><div class="gg-lbl">Uptime del sistema</div><div class="gg-bar"><div class="gg-fill o" style="width:99.8%"></div></div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="adTab(this,'at-users')">👥 Usuarios y Roles</div>
+      <div class="tab" onclick="adTab(this,'at-check')">📑 Plantillas Checklist</div>
+      <div class="tab" onclick="adTab(this,'at-audit')">🔍 Log de Auditoría</div>
+      <div class="tab" onclick="adTab(this,'at-sys')">⚙️ Sistema</div>
+      <div class="tab" onclick="adTab(this,'at-lic')">⭐ Licencia</div>
     </div>
 
-    <!-- ====== LISTA PERMISOS ====== -->
-    <div class="screen" id="screen-permisos">
-      <div class="filter-bar">
-        <select class="filter-select"><option>Todos los estados</option><option>Activo</option><option>Aprobado</option><option>En Revisión</option></select>
-        <select class="filter-select"><option>Todos los tipos</option><option>Trabajo en Altura</option><option>Hot Work</option></select>
-        <div style="margin-left:auto;display:flex;gap:8px">
-          <button class="btn btn-outline btn-sm">⬇ Exportar</button>
-          <button class="btn btn-nestle" onclick="navigate('nuevo')">➕ Nuevo PT Altura</button>
-        </div>
+    <!-- TAB: USUARIOS -->
+    <div id="at-users">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px;gap:8px">
+        <button class="btn bo btn-sm">⬇ Exportar</button>
+        <button class="btn ba btn-sm" onclick="showModal('newUserModal')">➕ Nuevo Usuario</button>
       </div>
       <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>N° Permiso</th><th>Tipo</th><th>Área</th><th>Contratista</th><th>Emisor</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead>
-            <tbody>
-              <tr style="cursor:pointer" onclick="navigate('nuevo')"><td><strong style="color:var(--blue-mid)">PT-2026-0089</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Planta Norte – Línea 3</td><td>Manuales Ltda.</td><td>J. Sepúlveda</td><td>03/06/2026</td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();navigate('nuevo')">Ver / Editar</button></td></tr>
-              <tr><td><strong style="color:var(--blue-mid)">PT-2026-0090</strong></td><td><span class="type-pill type-hot">🔥 Hot Work</span></td><td>Sala Caldera – B2</td><td>TecnoServ S.A.</td><td>J. Sepúlveda</td><td>03/06/2026</td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-outline btn-sm">Ver PDF</button></td></tr>
-              <tr><td><strong style="color:var(--blue-mid)">PT-2026-0088</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Techo Nave Industrial</td><td>CivTec Obras</td><td>R. Díaz</td><td>01/06/2026</td><td><span class="badge badge-red">✕ Rechazado</span></td><td><button class="btn btn-outline btn-sm">Ver motivo</button></td></tr>
-              <tr><td><strong style="color:var(--blue-mid)">PT-2026-0083</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Sala Bombas – Sótano</td><td>Manuales Ltda.</td><td>J. Sepúlveda</td><td>28/05/2026</td><td><span class="badge badge-gray">✓ Completado</span></td><td><button class="btn btn-outline btn-sm">Ver PDF</button></td></tr>
-            </tbody>
-          </table>
-        </div>
+        <table>
+          <thead><tr><th>Usuario</th><th>Email</th><th>Rol</th><th>Área</th><th>PT Emitidos</th><th>Último acceso</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--achs),var(--achs-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">BS</div><div><div style="font-weight:700;font-size:12px">Branco Sandoval</div><div style="font-size:10px;color:var(--text-lt)">Usted</div></div></div></td><td>b.sandoval@nestle.com</td><td><span class="role-chip rc-admin">ADMIN</span></td><td>SSOMA · Prevención</td><td><strong>87</strong></td><td>Ahora mismo</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--navy));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">RD</div><div style="font-weight:700;font-size:12px">Roberto Díaz</div></div></td><td>r.diaz@nestle.com</td><td><span class="role-chip rc-sup">SUPERVISOR</span></td><td>Planta Norte</td><td><strong>34</strong></td><td>Hace 2 horas</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--green),var(--green-dk));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">PM</div><div style="font-weight:700;font-size:12px">Pedro Morales</div></div></td><td>p.morales@manuales.cl</td><td><span class="role-chip rc-con">CONTRATISTA</span></td><td>Manuales Ltda.</td><td><strong>21</strong></td><td>Hoy 09:15</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--purple),#5B21B6);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">KP</div><div style="font-weight:700;font-size:12px">Karen Pinto</div></div></td><td>k.pinto@nestle.com</td><td><span class="role-chip rc-req">SOLICITANTE</span></td><td>Producción B</td><td><strong>12</strong></td><td>Hoy 08:40</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:#94A3B8;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">AG</div><div style="font-weight:700;font-size:12px">Ana González</div></div></td><td>a.gonzalez@achs.cl</td><td><span class="role-chip rc-aud">AUDITOR ACHS</span></td><td>ACHS — Externo</td><td>—</td><td>31/05/2026</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:#CBD5E1;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px">JF</div><div style="font-weight:700;font-size:12px">Jorge Fuentes</div></div></td><td>j.fuentes@civtec.cl</td><td><span class="role-chip rc-con">CONTRATISTA</span></td><td>CivTec Obras</td><td><strong>8</strong></td><td>Hace 3 días</td><td><span class="badge bg-r">Inactivo</span></td><td><button class="btn bo btn-sm">Activar</button></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- ====== PERMISO NESTLÉ - TRABAJO EN ALTURA ====== -->
-    <div class="screen" id="screen-nuevo">
-
-      <!-- Status stepper -->
-      <div class="permit-stepper">
-        <div class="pstep done"><div class="pstep-circle">✓</div><div class="pstep-label">Predicción<br>de Riesgo</div></div>
-        <div class="pstep-line done"></div>
-        <div class="pstep active"><div class="pstep-circle">2</div><div class="pstep-label">Llenado<br>del PT</div></div>
-        <div class="pstep-line"></div>
-        <div class="pstep"><div class="pstep-circle">3</div><div class="pstep-label">Medidas<br>Previas</div></div>
-        <div class="pstep-line"></div>
-        <div class="pstep"><div class="pstep-circle">4</div><div class="pstep-label">Emisión y<br>Aceptación</div></div>
-        <div class="pstep-line"></div>
-        <div class="pstep"><div class="pstep-circle">5</div><div class="pstep-label">Ejecución<br>del Trabajo</div></div>
-        <div class="pstep-line"></div>
-        <div class="pstep"><div class="pstep-circle">6</div><div class="pstep-label">Cierre<br>del PT</div></div>
-      </div>
-
-      <div class="pdf-banner">
-        <div class="pdf-banner-text"><strong>PT-2026-0089 · Trabajo en Altura · Planta Norte – Línea 3</strong>Estado actual: En llenado · REC-SHE-02-02 · Versión 2.0</div>
-        <div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,0.5)">⬇ Vista PDF</button><button class="btn btn-success btn-sm" onclick="showModal('emitirModal')">✓ Emitir y Aceptar</button></div>
-      </div>
-
-      <!-- NESTLÉ FORM -->
-      <div class="nestle-form">
-
-        <!-- HEADER -->
-        <div class="nestle-header">
-          <div class="nestle-logo-area">
-            <div class="nestle-brand">Nestlé</div>
-            <div class="nestle-she">SHE · Safety Health<br>Environment</div>
-          </div>
-          <div class="nestle-title-area">
-            <div class="nestle-title">Permiso de trabajo: Trabajos en altura</div>
-            <div class="nestle-subtitle">Este permiso de trabajo es obligatorio para cualquier trabajo en que una persona pueda caer de &gt;1,8 mts de altura.</div>
-          </div>
-          <div class="nestle-meta">
-            <div class="nestle-meta-row"><span class="nestle-meta-label">N° PTS (folio)</span><input class="nestle-meta-input" type="text" value="PT-2026-0089"></div>
-            <div class="nestle-meta-row"><span class="nestle-meta-label">Fecha de emisión</span><input class="nestle-meta-input" type="text" value="03/06/2026"></div>
-            <div class="nestle-meta-row"><span class="nestle-meta-label">Hora de emisión</span><input class="nestle-meta-input" type="text" value="08:45"></div>
-          </div>
-        </div>
-
-        <!-- Valid until -->
-        <div style="padding:10px 24px 0">
-          <div class="valid-until">
-            <span>⏰</span>
-            <strong>Este permiso no es válido después de:</strong>
-            <input type="text" style="border:none;border-bottom:1.5px solid #FBBF24;outline:none;font-size:12px;padding:2px 6px;background:transparent;width:200px" value="03/06/2026 – 17:00 hrs">
-          </div>
-        </div>
-
-        <!-- SECTION 1: UBICACIÓN Y DESCRIPCIÓN -->
-        <div class="nf-section" style="padding-top:14px">
-          <div class="nf-field-row">
-            <div class="nf-field" style="flex:2">
-              <label>UBICACIÓN del trabajo (especificar tanto como sea posible)</label>
-              <input type="text" value="Planta Norte – Línea 3, Pasillo Norte entre columnas A-7 y A-12, altura 6 mts">
-            </div>
-          </div>
-          <div class="nf-field-row" style="margin-top:10px">
-            <div class="nf-field" style="flex:2">
-              <label>DESCRIPCIÓN del trabajo</label>
-              <textarea>Reemplazo de 4 luminarias LED en pasillo norte. Se utilizará andamio certificado. Altura máxima de trabajo: 6 metros.</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 2: PREDICCIÓN DE RIESGO -->
-        <div class="nf-section">
-          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding:10px 0;font-size:12px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>¿Está la Predicción de riesgo completa y revisada?</strong>
-              <button class="yn-btn active-si" onclick="toggleYN(this,'si')">Sí</button>
-              <button class="yn-btn" onclick="toggleYN(this,'no')">No</button>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>Número de predicción de riesgo:</strong>
-              <input type="text" style="border:none;border-bottom:1.5px solid #ccc;width:120px;font-size:12px;outline:none;padding:2px 4px" value="PR-2026-112">
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>¿Se informó a la Autoridad del área y a las personas afectadas?</strong>
-              <button class="yn-btn active-si" onclick="toggleYN(this,'si')">Sí</button>
-              <button class="yn-btn" onclick="toggleYN(this,'no')">No</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 3: CHECKLIST PREVIO -->
-        <div class="nf-section">
-          <div class="nf-section-header">MEDIDAS TOMADAS PREVIAS AL PERMISO &nbsp;(Ej. revisión de equipamiento, herramientas, trabajos preliminares, EPP establecidos y revisados)</div>
-          <table class="check-table">
-            <thead>
-              <tr><th style="width:120px">Categoría</th><th>Verificación</th><th style="width:50px">Sí</th><th style="width:50px">N/A</th></tr>
-            </thead>
-            <tbody id="checkPrevia">
-              <!-- Área de trabajo y acceso -->
-              <tr><td class="cat-cell" rowspan="7">Área de trabajo y acceso</td><td class="desc-cell">Se ha confirmado la capacidad de soporte de carga de servicio del área de trabajo. El límite de carga de servicio está claramente etiquetado.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Área de trabajo equipada en todos los bordes con rodapié, baranda a la altura de la rodilla y pasamano. Se da prioridad a las barandas por encima de los sistemas de protección contra caídas.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Trabajadores capacitados arman el andamio móvil y es revisado por una persona competente. Incorporar tarjetas verde y roja, solo utilizar andamios modelo Layer en uso, conexión o roseta.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Se han revisado las escaleras de acceso y están en condición segura de trabajo.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">La plataforma de trabajo es estable y/o está fija. (En caso de techumbre esta se encuentra seca, sin rocío, ni lluvia)</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Plataformas elevadoras de trabajo móvil son apropiadas para la tarea y están en condición segura. Se ha realizado una inspección formal dentro de los últimos 6 meses. Incorporar Check List diario.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-na" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Se han demarcado las áreas a nivel de piso con barreras temporales y señalización de advertencia.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <!-- Protección debajo -->
-              <tr><td class="cat-cell" rowspan="3">Protección de áreas debajo del trabajo</td><td class="desc-cell">Se han puesto protecciones o redes de seguridad para evitar caída de material.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Al trabajar con escaleras, una persona está afirmando la escalera mientras se trabaja sobre ella.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-na" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Se ha instalado un conducto de vaciado para material de desecho.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <!-- Emergencia -->
-              <tr><td class="cat-cell" rowspan="2">Emergencia</td><td class="desc-cell">Se ha acordado y comunicado un plan de rescate en caso de emergencia, incluido cómo llamar por ayuda.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Hay un equipo de rescate adecuado en el lugar (especificar a continuación).</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <!-- Capacidad -->
-              <tr><td class="cat-cell">Capacidad del trabajador</td><td class="desc-cell">Los trabajadores son competentes para trabajar y realizar las actividades de forma segura.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- SECTION 4: CONTROL DE PRESIÓN ARTERIAL -->
-        <div class="nf-section">
-          <div class="nf-section-header" style="text-align:center;font-size:13px">CONTROL DE PRESIÓN ARTERIAL</div>
-          <table class="bp-table">
-            <thead>
-              <tr><th style="width:40px">N°</th><th>NOMBRE DEL TRABAJADOR</th><th style="width:140px">RUT</th><th style="width:100px">PRESIÓN</th><th style="width:130px">APTO</th></tr>
-            </thead>
-            <tbody>
-              <tr><td style="text-align:center;font-size:11px;color:#999">1</td><td><input type="text" value="Carlos Muñoz Reyes" placeholder="Nombre completo"></td><td><input type="text" value="15.234.567-8"></td><td><input type="text" value="120/80" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto1" checked> Sí</label><label class="bp-radio"><input type="radio" name="apto1"> No</label></div></td></tr>
-              <tr><td style="text-align:center;font-size:11px;color:#999">2</td><td><input type="text" value="Luis Vargas Torres" placeholder="Nombre completo"></td><td><input type="text" value="12.987.654-3"></td><td><input type="text" value="118/75" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto2" checked> Sí</label><label class="bp-radio"><input type="radio" name="apto2"> No</label></div></td></tr>
-              <tr><td style="text-align:center;font-size:11px;color:#999">3</td><td><input type="text" value="Ana Fuentes Soto" placeholder="Nombre completo"></td><td><input type="text" value="16.543.210-K"></td><td><input type="text" value="122/78" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto3" checked> Sí</label><label class="bp-radio"><input type="radio" name="apto3"> No</label></div></td></tr>
-              <tr><td style="text-align:center;font-size:11px;color:#999">4</td><td><input type="text" placeholder="Nombre completo"></td><td><input type="text" placeholder="RUT"></td><td><input type="text" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto4"> Sí</label><label class="bp-radio"><input type="radio" name="apto4"> No</label></div></td></tr>
-              <tr><td style="text-align:center;font-size:11px;color:#999">5</td><td><input type="text" placeholder="Nombre completo"></td><td><input type="text" placeholder="RUT"></td><td><input type="text" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto5"> Sí</label><label class="bp-radio"><input type="radio" name="apto5"> No</label></div></td></tr>
-            </tbody>
-          </table>
-          <div style="margin-top:10px;display:flex;gap:16px;align-items:center">
-            <div class="nf-field" style="flex:1">
-              <label>Nombre paramédico</label>
-              <input type="text" value="Pamela Riquelme (Enfermera SHE)" placeholder="Nombre y cargo del paramédico">
-            </div>
-          </div>
-          <div style="margin-top:10px">
-            <div class="nf-field">
-              <label>Medidas adicionales que han sido tomadas previas al permiso: <span style="font-size:10px;color:#888">(En caso de realizar Bloqueo LOTO, incorporar Check List de realización LOTO)</span></label>
-              <textarea placeholder="Describa aquí medidas adicionales tomadas…">Verificación de estructura del andamio por persona competente. Demarcación de perímetro con valla roja. Coordinación con Jefe de Producción para detención momentánea de línea.</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 5: PRECAUCIONES DURANTE EL TRABAJO -->
-        <div class="nf-section">
-          <div class="nf-section-header red">PRECAUCIONES requeridas durante el trabajo &nbsp;(Ej. forma segura de trabajo, utilizar EPP)</div>
-          <table class="prec-table">
-            <thead><tr><th style="width:120px">Categoría</th><th>Precaución</th><th style="width:50px">Sí</th><th style="width:50px">N/A</th></tr></thead>
-            <tbody>
-              <tr><td class="cat-cell" rowspan="3">Moverse y trabajar</td><td class="desc-cell">Seguir procedimientos definidos para moverse a través de superficies en altura. Utilizar una pasarela sobre superficies de techos frágiles.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">No subir o encaramarse en las barandas.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">No lanzar o dejar caer ningún material desde las plataformas de trabajo o techos; ¡en su lugar se deben usar conductos de vaciado!</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="cat-cell">Cerrar aberturas</td><td class="desc-cell">Cubrir inmediatamente cualquier abertura. Asegurar las cubiertas para que no se resbalen.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="cat-cell" rowspan="2">EPP</td><td class="desc-cell">Usar casco con barbiquejo, zapatos de seguridad, antiparras, protector solar (si aplica).</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="desc-cell">Usar Arnés de seguridad con 2 cabos de vida.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-              <tr><td class="cat-cell">Finalización del trabajo</td><td class="desc-cell">Sacar a todas las personas, herramientas y materiales de altura.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-            </tbody>
-          </table>
-          <div style="margin-top:10px">
-            <div class="nf-field">
-              <label>Precauciones adicionales y EPP requeridos:</label>
-              <textarea placeholder="Ingrese precauciones adicionales específicas para este trabajo…">Protector auditivo durante uso de taladro. Sistema de comunicación radial entre trabajadores en altura y vigía a nivel de piso.</textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- SECTION 6: CERTIFICACIÓN Y ACEPTACIÓN -->
-        <div class="nf-section">
-          <div class="sig-grid">
-            <div class="sig-box">
-              <div class="sig-box-title">CERTIFICACIÓN por el Emisor de Permiso de trabajo</div>
-              <div class="sig-box-desc">Yo certifico que: a) He visitado el área de trabajo, revisado el trabajo y los riesgos involucrados junto con la Autoridad en Realización; b) Los controles establecidos en este PTS permitirán realizar el trabajo de forma segura; c) Las medidas previas al permiso han sido implementadas; y d) La Autoridad en realización comprende los controles requeridos y es capaz de implementarlos.</div>
-              <div class="sig-field-row">
-                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" value="Juan Sepúlveda Mora"></div>
-              </div>
-              <div class="sig-field-row">
-                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Clic para firmar digitalmente</div></div>
-                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" value="03/06/2026 08:45"></div>
-              </div>
-            </div>
-            <div class="sig-box">
-              <div class="sig-box-title">ACEPTACIÓN por la Autoridad en Realización</div>
-              <div class="sig-box-desc">Yo certifico que: a) El trabajo sea realizado dentro de los límites descritos; b) Los controles son seguidos por todos los trabajadores; c) Todos los trabajadores comprenden los riesgos; d) Si cualquier requisito cambia o hay un incidente, el trabajo será detenido.</div>
-              <div class="sig-field-row">
-                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" value="Pedro Morales Castro"></div>
-              </div>
-              <div class="sig-field-row">
-                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Clic para firmar digitalmente</div></div>
-                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" value="03/06/2026 08:52"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- VISITAS DE INSPECCIÓN -->
-        <div class="nf-section">
-          <div class="nf-section-header" style="text-align:center">VISITAS DE INSPECCIÓN (Durante el trabajo)</div>
-          <table class="insp-table">
-            <thead><tr><th style="width:160px">Nombre</th><th style="width:80px">Hora</th><th style="width:120px">Firma</th><th>Comentarios</th></tr></thead>
-            <tbody>
-              <tr><td><input type="text" value="J. Sepúlveda"></td><td><input type="text" value="10:30"></td><td><input type="text" value="[Digital]"></td><td><input type="text" value="Todo conforme. Arneses bien instalados."></td></tr>
-              <tr><td><input type="text" placeholder="Nombre"></td><td><input type="text" placeholder="HH:MM"></td><td><input type="text" placeholder="Firma"></td><td><input type="text" placeholder="Comentarios de la visita…"></td></tr>
-              <tr><td><input type="text" placeholder="Nombre"></td><td><input type="text" placeholder="HH:MM"></td><td><input type="text" placeholder="Firma"></td><td><input type="text" placeholder="Comentarios de la visita…"></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- PARTE 2 -->
-        <div class="part2-header">PARTE 2 — Completar esta parte cuando se ha terminado el trabajo</div>
-
-        <!-- MEDIDAS POSTERIORES -->
-        <div class="nf-section" style="padding-top:14px">
-          <div class="nf-section-header orange">MEDIDAS POSTERIORES AL PERMISO requeridas &nbsp;(Trabajos finales / dejar el área segura)</div>
-          <table class="prec-table">
-            <thead><tr><th style="width:160px">Restablecimiento del área</th><th>Medida</th><th style="width:50px">Sí</th><th style="width:50px">N/A</th></tr></thead>
-            <tbody>
-              <tr><td class="cat-cell">Restablecimiento del área</td><td class="desc-cell">Sacar barreras temporales a nivel de piso.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
-            </tbody>
-          </table>
-          <div style="margin-top:10px">
-            <div class="nf-field">
-              <label>Medidas posteriores al permiso adicionales requeridas:</label>
-              <textarea placeholder="Describa medidas adicionales de cierre…"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <!-- CIERRE Y CONOCIMIENTO -->
-        <div class="nf-section">
-          <div class="sig-grid">
-            <div class="sig-box" style="border-color:var(--green-mid)">
-              <div class="sig-box-title" style="color:var(--green)">CIERRE por parte del Emisor de PTS</div>
-              <div class="sig-box-desc">Declaro este PTS cerrado. No se realizarán más trabajos en altura, las medidas posteriores al permiso establecidas anteriormente son suficientes.</div>
-              <div class="sig-field-row">
-                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" placeholder="Nombre del Emisor"></div>
-              </div>
-              <div class="sig-field-row">
-                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Firmar cierre</div></div>
-                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" placeholder="DD/MM/YYYY HH:MM"></div>
-              </div>
-            </div>
-            <div class="sig-box" style="border-color:var(--green-mid)">
-              <div class="sig-box-title" style="color:var(--green)">CONOCIMIENTO por parte de Autoridad en Realización</div>
-              <div class="sig-box-desc">Estoy en conocimiento que este PTS ya no es válido. He hecho el área de trabajo segura y he comunicado el cierre del PTS a todos los miembros del equipo.</div>
-              <div class="sig-field-row">
-                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" placeholder="Nombre Autoridad Realización"></div>
-              </div>
-              <div class="sig-field-row">
-                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Firmar conocimiento</div></div>
-                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" placeholder="DD/MM/YYYY HH:MM"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- FOOTER NESTLE -->
-        <div class="nestle-ref">Entregar Original a SHE, copia de color Azul al Emisor y Copia Color Amarilla para Autoridad de Realización &nbsp;|&nbsp; Versión 2.0 - 10/2016 &nbsp;|&nbsp; REC-SHE-02-02</div>
-
-        <!-- ACTIONS -->
-        <div style="padding:16px 24px;background:var(--gray-light);border-top:1px solid var(--gray-med);display:flex;gap:10px;justify-content:flex-end">
-          <button class="btn btn-outline" onclick="navigate('permisos')">← Volver</button>
-          <button class="btn btn-outline">💾 Guardar Borrador</button>
-          <button class="btn btn-nestle" onclick="showModal('emitirModal')">✓ Emitir y Aceptar PTS</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ====== CONTRATISTAS ====== -->
-    <div class="screen" id="screen-contratistas">
+    <!-- TAB: CHECKLISTS -->
+    <div id="at-check" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn ba btn-sm">➕ Nueva Plantilla</button></div>
       <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Empresa</th><th>RUT</th><th>Contacto</th><th>Habilitación</th><th>Estado</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Manuales Ltda.</strong></td><td>76.123.456-7</td><td>g.mena@manuales.cl</td><td><span class="badge badge-green">✓ Vigente dic 2026</span></td><td><span class="badge badge-green">Activo</span></td></tr>
-              <tr><td><strong>TecnoServ S.A.</strong></td><td>77.654.321-0</td><td>ops@tecnoserv.cl</td><td><span class="badge badge-yellow">⚠ Vence en 22 días</span></td><td><span class="badge badge-green">Activo</span></td></tr>
-              <tr><td><strong>CivTec Obras SpA</strong></td><td>76.999.888-5</td><td>jefe@civtec.cl</td><td><span class="badge badge-green">✓ Vigente sep 2026</span></td><td><span class="badge badge-green">Activo</span></td></tr>
-            </tbody>
-          </table>
-        </div>
+        <table>
+          <thead><tr><th>Plantilla</th><th>Tipo de Trabajo</th><th>Ítems Total</th><th>Ítems Críticos</th><th>Versión</th><th>Últ. modificación</th><th>Estado</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><strong>CHK-ALT-v3</strong></td><td><span class="tp tp-a">🪜 Trabajo en Altura</span></td><td>13 ítems</td><td><span style="color:var(--red);font-weight:700">3 críticos</span></td><td>v3.0</td><td>B. Sandoval · 01/06/2026</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><strong>CHK-HOT-v2</strong></td><td><span class="tp tp-h">🔥 Hot Work</span></td><td>11 ítems</td><td><span style="color:var(--red);font-weight:700">4 críticos</span></td><td>v2.1</td><td>R. Díaz · 15/05/2026</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><strong>CHK-ESC-v2</strong></td><td><span class="tp tp-c">🕳 Espacio Confinado</span></td><td>16 ítems</td><td><span style="color:var(--red);font-weight:700">6 críticos</span></td><td>v2.0</td><td>B. Sandoval · 20/04/2026</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><strong>CHK-ELE-v1</strong></td><td><span class="tp tp-e">⚡ Eléctrico</span></td><td>9 ítems</td><td><span style="color:var(--red);font-weight:700">2 críticos</span></td><td>v1.2</td><td>B. Sandoval · 10/03/2026</td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Editar</button></td></tr>
+            <tr><td><strong>CHK-EXC-v1</strong></td><td><span class="tp tp-x">⛏ Excavación</span></td><td>10 ítems</td><td><span style="color:var(--red);font-weight:700">3 críticos</span></td><td>v1.0</td><td>B. Sandoval · 05/02/2026</td><td><span class="badge bg-y">Borrador</span></td><td><button class="btn bo btn-sm">Activar</button></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- ====== REPORTES ====== -->
-    <div class="screen" id="screen-reportes">
-      <div class="kpi-grid" style="margin-bottom:20px">
-        <div class="kpi-card blue"><div class="kpi-icon">📋</div><div class="kpi-num">142</div><div class="kpi-label">Total PT emitidos</div></div>
-        <div class="kpi-card green"><div class="kpi-icon">⏱</div><div class="kpi-num">94%</div><div class="kpi-label">Cerrados a tiempo</div></div>
-        <div class="kpi-card yellow"><div class="kpi-icon">🔄</div><div class="kpi-num">18 min</div><div class="kpi-label">Tiempo prom. aprobación</div></div>
-        <div class="kpi-card red"><div class="kpi-icon">✕</div><div class="kpi-num">7</div><div class="kpi-label">PT rechazados</div></div>
+    <!-- TAB: AUDIT LOG -->
+    <div id="at-audit" style="display:none">
+      <div class="fbar">
+        <select class="fsel"><option>Todas las acciones</option><option>Aprobaciones</option><option>Rechazos</option><option>Firmas digitales</option><option>Cierres</option></select>
+        <input type="date" class="fsel" value="2026-06-03">
+        <select class="fsel"><option>Todos los usuarios</option><option>Branco Sandoval</option><option>Roberto Díaz</option><option>Sistema automático</option></select>
+        <div style="margin-left:auto"><button class="btn bo btn-sm">⬇ Exportar Log</button></div>
       </div>
       <div class="card">
-        <div class="section-title" style="margin-bottom:14px">Log de Auditoría</div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Timestamp</th><th>Permiso</th><th>Usuario</th><th>Acción</th><th>Estado Anterior</th><th>Estado Nuevo</th></tr></thead>
-            <tbody>
-              <tr><td>03/06 08:52:11</td><td>PT-0089</td><td>P. Morales (Contratista)</td><td>ACEPTACIÓN_FIRMADA</td><td>SUBMITTED</td><td>APPROVED</td></tr>
-              <tr><td>03/06 08:45:00</td><td>PT-0089</td><td>J. Sepúlveda</td><td>CERTIFICACIÓN_FIRMADA</td><td>UNDER_REVIEW</td><td>APPROVED</td></tr>
-              <tr><td>03/06 08:30:05</td><td>PT-0089</td><td>J. Sepúlveda</td><td>REVIEW_START</td><td>SUBMITTED</td><td>UNDER_REVIEW</td></tr>
-            </tbody>
-          </table>
+        <table>
+          <thead><tr><th>Timestamp</th><th>Permiso</th><th>Usuario</th><th>Acción</th><th>Estado Anterior</th><th>Estado Nuevo</th><th>IP</th><th>Hash SHA-256</th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:monospace;font-size:10px">03/06 09:14:32</td><td><strong>PT-0089</strong></td><td>B. Sandoval</td><td><span class="badge bg-b">FIRMA_DIGITAL</span></td><td>DRAFT</td><td>SUBMITTED</td><td>192.168.1.22</td><td style="font-family:monospace;font-size:9px;color:var(--text-lt)">a3f8c1d2…</td></tr>
+            <tr><td style="font-family:monospace;font-size:10px">03/06 08:58:11</td><td><strong>PT-0090</strong></td><td>B. Sandoval</td><td><span class="badge bg-g">APROBADO</span></td><td>UNDER_REVIEW</td><td>APPROVED</td><td>192.168.1.22</td><td style="font-family:monospace;font-size:9px;color:var(--text-lt)">7b2e9f4a…</td></tr>
+            <tr><td style="font-family:monospace;font-size:10px">03/06 08:30:05</td><td><strong>PT-0090</strong></td><td>B. Sandoval</td><td><span class="badge bg-b">REVIEW_START</span></td><td>SUBMITTED</td><td>UNDER_REVIEW</td><td>192.168.1.22</td><td style="font-family:monospace;font-size:9px;color:var(--text-lt)">c1d45e8b…</td></tr>
+            <tr><td style="font-family:monospace;font-size:10px">03/06 08:12:47</td><td><strong>PT-0092</strong></td><td>R. Díaz</td><td><span class="badge bg-b">REVIEW_START</span></td><td>SUBMITTED</td><td>UNDER_REVIEW</td><td>192.168.1.45</td><td style="font-family:monospace;font-size:9px;color:var(--text-lt)">f9a2d1c3…</td></tr>
+            <tr><td style="font-family:monospace;font-size:10px">02/06 16:45:00</td><td><strong>PT-0090</strong></td><td>P. Morales</td><td><span class="badge bg-y">SUBMITTED</span></td><td>DRAFT</td><td>SUBMITTED</td><td>10.0.0.55</td><td style="font-family:monospace;font-size:9px;color:var(--text-lt)">2d8f7b9e…</td></tr>
+            <tr><td style="font-family:monospace;font-size:10px">02/06 11:20:18</td><td><strong>PT-0081</strong></td><td>B. Sandoval</td><td><span class="badge bg-r">RECHAZADO</span></td><td>UNDER_REVIEW</td><td>REJECTED</td><td>192.168.1.22</td><td style="font-family:monospace;font-size:9px;color:var(--text-lt)">8e4c2a1f…</td></tr>
+            <tr><td style="font-family:monospace;font-size:10px">02/06 09:00:00</td><td>—</td><td>Sistema</td><td><span class="badge bg-p">HABILITACION_VENCIDA</span></td><td>—</td><td>BLOQUEADO</td><td>Sistema</td><td style="font-family:monospace;font-size:9px;color:var(--text-lt)">auto</td></tr>
+          </tbody>
+        </table>
+        <div style="padding-top:10px;font-size:10px;color:var(--text-lt);font-style:italic">⚠ Log de auditoría inalterable — Ningún usuario puede modificar ni eliminar estos registros (append-only, PostgreSQL 16 + triggers). Certificado ACHS para cumplimiento regulatorio.</div>
+      </div>
+    </div>
+
+    <!-- TAB: SISTEMA -->
+    <div id="at-sys" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card">
+          <div class="ct2" style="margin-bottom:14px">⚙️ Configuración General</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="fld"><label>Nombre de la Empresa</label><input value="Nestlé Chile S.A."></div>
+            <div class="fld"><label>RUT Empresa</label><input value="96.958.000-2"></div>
+            <div class="fld"><label>Planta / Sitio Principal</label><input value="Planta Los Andes"></div>
+            <div class="fld"><label>Contacto SSOMA</label><input value="Branco Sandoval Pizarro"></div>
+            <div class="fld"><label>Email contacto</label><input value="b.sandoval@nestle.com"></div>
+            <div class="fld"><label>Zona horaria</label><select><option selected>America/Santiago (UTC-3)</option></select></div>
+            <div style="display:flex;justify-content:flex-end"><button class="btn ba btn-sm">💾 Guardar cambios</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct2" style="margin-bottom:14px">🔔 Notificaciones y Alertas</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-md)"><span>Alertas de vencimiento PT (push + email)</span><input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--achs)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-md)"><span>Alerta 30 días habilitación vencida</span><input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--achs)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-md)"><span>Notificación a Microsoft Teams</span><input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--achs)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-md)"><span>Resumen diario a Gerencia (07:00)</span><input type="checkbox" style="width:16px;height:16px;accent-color:var(--achs)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0"><span>Backup automático cada 24 hrs</span><input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--achs)"></div>
+          </div>
+          <div style="margin-top:12px"><div class="fld"><label>Tiempo alerta vencimiento (horas antes)</label><input type="number" value="2" style="width:100px"></div></div>
+          <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn ba btn-sm">💾 Guardar</button></div>
+        </div>
+        <div class="card">
+          <div class="ct2" style="margin-bottom:14px">🔗 Integraciones Activas</div>
+          <div style="display:flex;flex-direction:column;gap:9px;font-size:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--green-lt);border-radius:8px;border:1px solid #A7F3D0"><span>✅ Azure AD / Microsoft SSO</span><span class="badge bg-g">Conectado</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--green-lt);border-radius:8px;border:1px solid #A7F3D0"><span>✅ Power BI — Dashboard ejecutivo</span><span class="badge bg-g">Conectado</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--orange-lt);border-radius:8px;border:1px solid #FCD34D"><span>⏳ SAP — Sincronización OT</span><span class="badge bg-y">Pendiente</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--gray-lt);border-radius:8px;border:1px solid var(--gray-md)"><span>🔗 ACHS API — Reporte incidentes</span><button class="btn ba btn-sm">Conectar</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct2" style="margin-bottom:14px">📊 Estado del Sistema</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+            <div style="display:flex;justify-content:space-between"><span>Versión PermitPro</span><strong>v2.6.0</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Base de datos</span><strong style="color:var(--green)">PostgreSQL 16 · Online</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Almacenamiento usado</span><strong>2.4 GB / 50 GB</strong></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>Capacidad</span><strong>4.8%</strong></div><div class="prg-wrap"><div class="prg-fill g" style="width:4.8%"></div></div></div>
+            <div style="display:flex;justify-content:space-between"><span>Último backup</span><strong>Hoy 03:00 ✓</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Uptime</span><strong style="color:var(--green)">99.8% (30 días)</strong></div>
+            <div style="display:flex;justify-content:space-between"><span>Certificado SSL</span><strong style="color:var(--green)">Válido · vence 12/2027</strong></div>
+          </div>
         </div>
       </div>
     </div>
 
-  </div><!-- end content -->
-</div><!-- end main -->
-
-<!-- MODALS -->
-<div class="modal-overlay" id="emitirModal">
-  <div class="modal-box">
-    <div class="modal-title">✓ Emitir y Aceptar PTS</div>
-    <div class="alert-banner alert-success" style="margin-bottom:16px"><span>✓</span> Checklist completo · Control de presión OK · Sin bloqueantes críticos</div>
-    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px">Al emitir este PTS, certifica que todas las condiciones previas han sido verificadas y el trabajo puede ejecutarse de forma segura.</p>
-    <div class="form-group">
-      <label>PIN de firma digital (6 dígitos)</label>
-      <input type="password" placeholder="······" maxlength="6" style="letter-spacing:6px;font-size:18px;text-align:center">
+    <!-- TAB: LICENCIA -->
+    <div id="at-lic" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="card" style="border:2px solid var(--achs)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+            <div style="width:48px;height:48px;background:linear-gradient(135deg,var(--achs),var(--achs-dark));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px">⭐</div>
+            <div><div style="font-size:16px;font-weight:900;color:var(--navy)">Plan Enterprise</div><div style="font-size:11px;color:var(--text-lt)">Activo · Renovación 31/12/2026</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:7px;font-size:12px">
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> PT ilimitados por mes</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> Usuarios ilimitados</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> Firma digital SHA-256 + RFC 3161</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> Multi-sitio (hasta 5 plantas)</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> SSO Azure AD / Google</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> API REST + Webhooks</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> SLA 99.9% garantizado</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> Soporte 24/7 en español</div>
+            <div style="display:flex;align-items:center;gap:7px"><span style="color:var(--green)">✓</span> <strong>Certificado y validado por ACHS</strong></div>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:var(--red-lt);border-radius:8px;border:1px solid var(--achs);text-align:center">
+            <div style="font-size:13px;font-weight:900;color:var(--achs)">UF 80/mes</div>
+            <div style="font-size:10px;color:var(--text-lt)">Facturación anual · Incluye IVA</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card">
+            <div class="ct2" style="margin-bottom:10px">Uso del Plan</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>PT este mes</span><strong>142 / Ilimitado</strong></div><div class="prg-wrap"><div class="prg-fill g" style="width:60%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>Usuarios activos</span><strong>18 / Ilimitado</strong></div><div class="prg-wrap"><div class="prg-fill b" style="width:36%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>Almacenamiento</span><strong>2.4 GB / 50 GB</strong></div><div class="prg-wrap"><div class="prg-fill o" style="width:4.8%"></div></div></div>
+            </div>
+          </div>
+          <div class="card" style="background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff">
+            <div style="font-size:14px;font-weight:900;margin-bottom:6px">¿Necesita más sitios o módulos?</div>
+            <div style="font-size:11px;opacity:.8;margin-bottom:14px">Módulos adicionales disponibles: Analítica Predictiva, Integración SAP, App iOS/Android dedicada, Capacitación in-situ.</div>
+            <button class="cw" onclick="showModal('demoModal')">Hablar con un ejecutivo →</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="btn btn-outline" style="flex:1" onclick="closeModal('emitirModal')">Cancelar</button>
-      <button class="btn btn-nestle" style="flex:1" onclick="closeModal('emitirModal');alert('PTS PT-2026-0089 emitido correctamente. PDF generado y enviado a SHE y Autoridad de Realización.')">Firmar y Emitir PTS</button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN: CONTRATISTAS
+  ══════════════════════════════════════ -->
+  <div class="sc" id="sc-contratistas">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px;gap:8px">
+      <button class="btn bo btn-sm">⬇ Exportar</button>
+      <button class="btn ba btn-sm">➕ Nuevo Contratista</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Empresa</th><th>RUT</th><th>Contacto</th><th>Trabajadores</th><th>PT Activos</th><th>Habilitación</th><th>Estado</th><th>Acción</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Manuales Ltda.</strong></td><td>76.123.456-7</td><td>g.mena@manuales.cl</td><td>12</td><td><span class="badge bg-g">2</span></td><td><span class="badge bg-g">✓ Dic 2026</span></td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Ver</button></td></tr>
+          <tr><td><strong>TecnoServ S.A.</strong></td><td>77.654.321-0</td><td>ops@tecnoserv.cl</td><td>8</td><td><span class="badge bg-g">1</span></td><td><span class="badge bg-y">⚠ Vence 22 días</span></td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Ver</button></td></tr>
+          <tr><td><strong>Elecrom Chile</strong></td><td>96.111.222-3</td><td>admin@elecrom.cl</td><td>5</td><td><span class="badge bg-g">1</span></td><td><span class="badge bg-g">✓ Mar 2027</span></td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Ver</button></td></tr>
+          <tr><td><strong>CivTec Obras SpA</strong></td><td>76.999.888-5</td><td>jefe@civtec.cl</td><td>15</td><td><span class="badge bg-g">1</span></td><td><span class="badge bg-g">✓ Sep 2026</span></td><td><span class="badge bg-g">Activo</span></td><td><button class="btn bo btn-sm">Ver</button></td></tr>
+          <tr><td><strong>IndService Ltda.</strong></td><td>76.777.333-2</td><td>contacto@indservice.cl</td><td>6</td><td>0</td><td><span class="badge bg-r">✕ Vencida</span></td><td><span class="badge bg-r">Bloqueado</span></td><td><button class="btn bd btn-sm">Renovar</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCREEN: REPORTES
+  ══════════════════════════════════════ -->
+  <div class="sc" id="sc-reportes">
+    <div class="fbar">
+      <select class="fsel"><option>Mayo – Junio 2026</option><option>Abril – Mayo 2026</option></select>
+      <select class="fsel"><option>Todas las áreas</option><option>Planta Norte</option></select>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="btn bo btn-sm">⬇ PDF ACHS</button>
+        <button class="btn bo btn-sm">⬇ Excel</button>
+        <button class="btn ba btn-sm">📊 Power BI</button>
+      </div>
+    </div>
+    <div class="kgrid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+      <div class="kc kb"><div class="ki b">📋</div><div class="knum">142</div><div class="klbl">Total PT emitidos</div></div>
+      <div class="kc kg"><div class="ki g">⏱</div><div class="knum">94%</div><div class="klbl">Cerrados a tiempo</div></div>
+      <div class="kc ko"><div class="ki o">🔄</div><div class="knum">18</div><div class="klbl">Min prom. aprobación</div></div>
+      <div class="kc kr"><div class="ki r">✕</div><div class="knum">7</div><div class="klbl">PT rechazados (4.9%)</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div class="card"><div class="ct2" style="margin-bottom:12px">PT por tipo (últimos 30 días)</div><div class="ch-wrap"><canvas id="chTipo"></canvas></div></div>
+      <div class="card"><div class="ct2" style="margin-bottom:12px">Tiempo prom. aprobación (min)</div><div class="ch-wrap"><canvas id="chTime"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="ct2">Log de Auditoría Completo</div>
+        <div class="achs-stamp">✓ Válido para Auditoría ACHS</div>
+      </div>
+      <table>
+        <thead><tr><th>Timestamp</th><th>Permiso</th><th>Usuario</th><th>Acción</th><th>De</th><th>A</th><th>IP</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:monospace;font-size:10px">03/06 09:14:32</td><td>PT-0090</td><td>B. Sandoval</td><td><span class="badge bg-g">FIRMA_DIGITAL</span></td><td>UNDER_REVIEW</td><td>APPROVED</td><td>192.168.1.22</td></tr>
+          <tr><td style="font-family:monospace;font-size:10px">03/06 08:58:11</td><td>PT-0090</td><td>B. Sandoval</td><td><span class="badge bg-g">APROBADO</span></td><td>UNDER_REVIEW</td><td>APPROVED</td><td>192.168.1.22</td></tr>
+          <tr><td style="font-family:monospace;font-size:10px">03/06 08:30:05</td><td>PT-0090</td><td>B. Sandoval</td><td><span class="badge bg-b">REVIEW_START</span></td><td>SUBMITTED</td><td>UNDER_REVIEW</td><td>192.168.1.22</td></tr>
+          <tr><td style="font-family:monospace;font-size:10px">02/06 11:20:18</td><td>PT-0081</td><td>B. Sandoval</td><td><span class="badge bg-r">RECHAZADO</span></td><td>UNDER_REVIEW</td><td>REJECTED</td><td>192.168.1.22</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  </div><!-- end #ct -->
+</div><!-- end #main -->
+</div><!-- end shell -->
+
+<!-- FOOTER -->
+<div id="ft">
+  <div class="ft-copy">
+    <span class="ft-cert">✓ ACHS</span>
+    <span>© 2026 <span class="ft-achs">PermitPro</span> — Plataforma Digital de Permisos de Trabajo. Todos los derechos reservados.</span>
+    <span>|</span>
+    <span>Certificado y validado por <span class="ft-achs">ACHS</span> · Asociación Chilena de Seguridad</span>
+  </div>
+  <div class="ft-links">
+    <a>Términos de uso</a>
+    <a>Privacidad</a>
+    <a onclick="showModal('demoModal')">Contacto comercial</a>
+    <a>Soporte 24/7</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+
+<!-- FIRMA DIGITAL -->
+<div class="mo" id="firmaModal">
+  <div class="mb" style="max-width:480px">
+    <div class="mt">✏ Firma Digital Certificada</div>
+    <div class="ms">Certificado SHA-256 · Timestamp RFC 3161 · ACHS Validated</div>
+    <div class="tabs" style="margin-bottom:14px">
+      <div class="tab active" onclick="sigTab(this,'tabPin')">🔢 PIN 6 dígitos</div>
+      <div class="tab" onclick="sigTab(this,'tabCanvas')">✍ Firma manuscrita</div>
+    </div>
+
+    <!-- PIN TAB -->
+    <div id="tabPin">
+      <div style="text-align:center;margin-bottom:8px;font-size:12px;color:var(--text-lt)">Ingrese su PIN de seguridad personal (6 dígitos)</div>
+      <div class="pin-dots" id="pinDots">
+        <div class="pd" id="pd0">·</div>
+        <div class="pd" id="pd1">·</div>
+        <div class="pd" id="pd2">·</div>
+        <div class="pd" id="pd3">·</div>
+        <div class="pd" id="pd4">·</div>
+        <div class="pd" id="pd5">·</div>
+      </div>
+      <div class="pkp">
+        <button class="pk" onclick="pinKey('1')">1</button>
+        <button class="pk" onclick="pinKey('2')">2</button>
+        <button class="pk" onclick="pinKey('3')">3</button>
+        <button class="pk" onclick="pinKey('4')">4</button>
+        <button class="pk" onclick="pinKey('5')">5</button>
+        <button class="pk" onclick="pinKey('6')">6</button>
+        <button class="pk" onclick="pinKey('7')">7</button>
+        <button class="pk" onclick="pinKey('8')">8</button>
+        <button class="pk" onclick="pinKey('9')">9</button>
+        <button class="pk" onclick="pinKey('*')" style="font-size:20px">⌫</button>
+        <button class="pk" onclick="pinKey('0')">0</button>
+        <button class="pk" onclick="pinKey('C')" style="color:var(--red);font-size:11px">CLR</button>
+      </div>
+      <div id="pinStatus" style="text-align:center;margin-top:10px;font-size:12px;min-height:20px;font-weight:700"></div>
+    </div>
+
+    <!-- CANVAS TAB -->
+    <div id="tabCanvas" style="display:none">
+      <div style="font-size:11px;color:var(--text-lt);margin-bottom:7px">Dibuje su firma con el mouse o dedo</div>
+      <div class="sig-pad-wrap" style="height:120px">
+        <canvas id="sigCanvas" width="440" height="120" style="width:100%;height:120px"></canvas>
+        <div class="sig-ph" id="sigPh">Firme aquí →</div>
+      </div>
+      <div style="display:flex;gap:7px;margin-top:8px">
+        <button class="btn bo btn-sm" onclick="clearSig()">🗑 Limpiar</button>
+        <div style="flex:1"></div>
+        <button class="btn bg2 btn-sm" onclick="confirmCanvasSig()">✓ Confirmar firma</button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:9px;margin-top:16px">
+      <button class="btn bo" style="flex:1" onclick="closeModal('firmaModal');resetPin()">Cancelar</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="firmaModal">
-  <div class="modal-box">
-    <div class="modal-title">✏ Firma Digital</div>
-    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px">Ingrese su PIN de seguridad para firmar digitalmente este documento.</p>
-    <div style="background:var(--gray-light);border:2px dashed var(--gray-med);border-radius:8px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:12px;color:var(--text-light)">O use huella dactilar en dispositivo móvil</div>
-    <div class="form-group"><label>PIN (6 dígitos)</label><input type="password" placeholder="······" maxlength="6" style="letter-spacing:6px;font-size:18px;text-align:center"></div>
-    <div style="display:flex;gap:10px;margin-top:16px">
-      <button class="btn btn-outline" style="flex:1" onclick="closeModal('firmaModal')">Cancelar</button>
-      <button class="btn btn-success" style="flex:1" onclick="closeModal('firmaModal')">✓ Confirmar Firma</button>
+<!-- EMITIR PTS -->
+<div class="mo" id="emitirModal">
+  <div class="mb">
+    <div class="mt">✓ Emitir y Aceptar PTS</div>
+    <div class="ms">PT-2026-0089 · Trabajo en Altura · Planta Norte Línea 3</div>
+    <div class="alert al-s">✓ Checklist completo (13/13) · Control presión OK · Sin bloqueantes críticos</div>
+    <div style="font-size:12px;color:var(--text-lt);margin-bottom:14px">Al emitir este PTS certifica que todas las condiciones previas han sido verificadas y el trabajo puede ejecutarse de forma segura. Se generará un PDF con QR único y firma digital certificada por ACHS.</div>
+    <div class="fld" style="margin-bottom:14px"><label>PIN de firma digital (6 dígitos)</label><input type="password" placeholder="••••••" maxlength="6" style="letter-spacing:8px;font-size:20px;text-align:center" id="emitirPin" oninput="if(this.value.length===6)emitirConfirm()"></div>
+    <div style="display:flex;gap:9px">
+      <button class="btn bo" style="flex:1" onclick="closeModal('emitirModal')">Cancelar</button>
+      <button class="btn ba" style="flex:1" onclick="emitirConfirm()">🛡 Firmar y Emitir PTS</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="notifModal">
-  <div class="modal-box" style="max-width:380px">
-    <div class="modal-title">🔔 Notificaciones</div>
-    <div style="display:flex;flex-direction:column;gap:0">
-      <div style="padding:12px 0;border-bottom:1px solid var(--gray-med)"><div style="display:flex;gap:8px"><span style="font-size:18px">⚠️</span><div><div style="font-size:13px;font-weight:600">PT-0089 vence en 1h 30min</div><div style="font-size:11px;color:var(--text-light)">Trabajo en Altura · Planta Norte</div></div></div></div>
-      <div style="padding:12px 0"><div style="display:flex;gap:8px"><span style="font-size:18px">📋</span><div><div style="font-size:13px;font-weight:600">PT-0092 esperando tu revisión</div><div style="font-size:11px;color:var(--text-light)">CivTec Obras · Hace 28 min</div></div></div></div>
+<!-- SUSPENDER -->
+<div class="mo" id="suspendModal">
+  <div class="mb">
+    <div class="mt">⏸ Suspender Trabajo Activo</div>
+    <div class="ms">La suspensión es inmediata. Se notificará al contratista y quedará en auditoría.</div>
+    <div class="frow full"><div class="fld"><label>Motivo de la suspensión *</label><textarea placeholder="Ej: Condición climática adversa, emergencia en área, cambio de proceso…" style="min-height:80px"></textarea></div></div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn bo" style="flex:1" onclick="closeModal('suspendModal')">Cancelar</button>
+      <button class="btn bd" style="flex:1" onclick="closeModal('suspendModal');alert('Trabajo suspendido. Notificación enviada al contratista y al supervisor SSOMA.')">⏸ Suspender Ahora</button>
     </div>
-    <button class="btn btn-outline" style="width:100%;margin-top:16px" onclick="closeModal('notifModal')">Cerrar</button>
   </div>
 </div>
+
+<!-- NUEVO USUARIO -->
+<div class="mo" id="newUserModal">
+  <div class="mb">
+    <div class="mt">👤 Nuevo Usuario</div>
+    <div class="ms">El usuario recibirá un email de bienvenida con sus credenciales.</div>
+    <div class="frow"><div class="fld"><label>Nombre completo *</label><input placeholder="Juan Pérez López"></div><div class="fld"><label>Email corporativo *</label><input placeholder="usuario@empresa.cl"></div></div>
+    <div class="frow"><div class="fld"><label>Rol *</label><select><option>SUPERVISOR_SSOMA</option><option>SOLICITANTE</option><option>CONTRATISTA</option><option>AUDITOR</option><option>ADMIN</option></select></div><div class="fld"><label>Área / Departamento</label><input placeholder="Planta Norte · Producción…"></div></div>
+    <div class="frow full"><div class="fld"><label>Teléfono (para notificaciones push)</label><input placeholder="+56 9 XXXX XXXX"></div></div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn bo" style="flex:1" onclick="closeModal('newUserModal')">Cancelar</button>
+      <button class="btn ba" style="flex:1" onclick="closeModal('newUserModal');alert('Usuario creado. Email de bienvenida enviado.')">Crear Usuario</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO / CONTACTO -->
+<div class="mo" id="demoModal">
+  <div class="mb">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:32px;margin-bottom:6px">🛡</div>
+      <div class="mt" style="text-align:center">Solicitar Demo Completa</div>
+      <div class="ms" style="text-align:center">Un ejecutivo PermitPro le contactará en menos de 2 horas hábiles</div>
+    </div>
+    <div class="frow"><div class="fld"><label>Nombre *</label><input placeholder="Su nombre completo" value="Branco Sandoval"></div><div class="fld"><label>Empresa *</label><input placeholder="Empresa" value="Nestlé Chile S.A."></div></div>
+    <div class="frow"><div class="fld"><label>Email *</label><input placeholder="email@empresa.cl" value="b.sandoval@nestle.com"></div><div class="fld"><label>Teléfono</label><input placeholder="+56 9 XXXX XXXX"></div></div>
+    <div class="frow full"><div class="fld"><label>¿Qué necesita digitalizar?</label><textarea placeholder="Cuéntenos su proceso actual y qué desea mejorar…" style="min-height:60px">Permisos de Trabajo en Altura para operaciones industriales Nestlé. Presentación a ACHS para validación y despliegue nacional.</textarea></div></div>
+    <div style="display:flex;gap:9px;margin-top:4px">
+      <button class="btn bo" style="flex:1" onclick="closeModal('demoModal')">Cancelar</button>
+      <button class="btn ba" style="flex:2" onclick="closeModal('demoModal');showToast('¡Solicitud enviada! Le contactaremos pronto.')">📞 Solicitar Demo → UF 25/mes</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE -->
+<div class="mo" id="upgradeModal">
+  <div class="mb" style="max-width:520px">
+    <div class="mt">⭐ Plan Enterprise PermitPro</div>
+    <div class="ms">Certificado ACHS · Incluye todo lo que necesita para cumplimiento regulatorio total</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="border:1.5px solid var(--gray-md);border-radius:9px;padding:12px;text-align:center">
+        <div style="font-size:18px;font-weight:900;color:var(--navy)">UF 8</div>
+        <div style="font-size:10px;color:var(--text-lt);margin:3px 0">Starter / mes</div>
+        <div style="font-size:10px">50 PT/mes · 10 usuarios</div>
+      </div>
+      <div style="border:2px solid var(--blue);border-radius:9px;padding:12px;text-align:center;background:var(--blue-lt)">
+        <div style="font-size:18px;font-weight:900;color:var(--navy)">UF 25</div>
+        <div style="font-size:10px;color:var(--text-lt);margin:3px 0">Professional / mes</div>
+        <div style="font-size:10px">PT ilimitados · 50 usuarios</div>
+      </div>
+      <div style="border:2px solid var(--achs);border-radius:9px;padding:12px;text-align:center;background:var(--red-lt)">
+        <div style="font-size:18px;font-weight:900;color:var(--achs)">UF 80+</div>
+        <div style="font-size:10px;color:var(--text-lt);margin:3px 0">Enterprise / mes</div>
+        <div style="font-size:10px">Multi-sitio · SSO · ACHS cert.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:9px">
+      <button class="btn bo" style="flex:1" onclick="closeModal('upgradeModal')">Cerrar</button>
+      <button class="btn ba" style="flex:2" onclick="closeModal('upgradeModal');showModal('demoModal')">📞 Hablar con un ejecutivo</button>
+    </div>
+  </div>
+</div>
+
+<!-- HELP -->
+<div class="mo" id="helpModal">
+  <div class="mb">
+    <div class="mt">❓ Ayuda y Recursos</div>
+    <div class="ms">Centro de soporte PermitPro</div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--gray-md);border-radius:8px;cursor:pointer" onclick="closeModal('helpModal')"><span style="font-size:20px">📖</span><div><div style="font-weight:700">Documentación completa</div><div style="font-size:11px;color:var(--text-lt)">Guías de uso, API Reference</div></div></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--gray-md);border-radius:8px;cursor:pointer" onclick="closeModal('helpModal');showModal('demoModal')"><span style="font-size:20px">💬</span><div><div style="font-weight:700">Chat con soporte 24/7</div><div style="font-size:11px;color:var(--text-lt)">Tiempo de respuesta: &lt;15 min</div></div></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--red-lt);border:1px solid var(--achs);border-radius:8px"><span style="font-size:20px">🛡</span><div><div style="font-weight:700;color:var(--achs)">Certificación ACHS</div><div style="font-size:11px;color:var(--text-lt)">Documento de validación disponible para descarga</div></div></div>
+    </div>
+    <div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn bo" onclick="closeModal('helpModal')">Cerrar</button></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:24px;right:24px;background:var(--green-dk);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);max-width:300px"></div>
+
+<style>
+@keyframes gps-pulse{0%{r:8;opacity:.9;}100%{r:22;opacity:0;}}
+.pulse-anim{animation:gps-pulse 2s ease-out infinite;}
+.role-chip{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:800;}
+.rc-admin{background:#FEE2E2;color:#991B1B;}
+.rc-sup{background:#DBEAFE;color:#1E40AF;}
+.rc-req{background:#D1FAE5;color:#065F46;}
+.rc-con{background:#EDE9FE;color:#5B21B6;}
+.rc-aud{background:#FEF3C7;color:#92400E;}
+</style>
 
 <script>
-const screens = { dashboard:'Dashboard', permisos:'Permisos de Trabajo', nuevo:'PT Trabajo en Altura – REC-SHE-02-02', contratistas:'Gestión de Contratistas', reportes:'Reportes y Auditoría' };
+// ── NAVIGATION ──
+const titles={dashboard:'Dashboard · Nestlé Chile S.A.',permisos:'Permisos de Trabajo',nuevo:'PT Trabajo en Altura — REC-SHE-02-02',admin:'Panel de Administración',contratistas:'Gestión de Contratistas',reportes:'Reportes y Auditoría'};
+function go(s){
+  document.querySelectorAll('.sc').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  const el=document.getElementById('sc-'+s);
+  if(el) el.classList.add('active');
+  document.getElementById('tb-title').innerHTML=(titles[s]||s).replace('Nestlé','Nestlé <em>· Nestlé Chile S.A.</em>').replace('Dashboard','Dashboard');
+  // fix title
+  if(s==='dashboard') document.getElementById('tb-title').innerHTML='Dashboard <em>· Nestlé Chile S.A.</em>';
+  else if(s==='permisos') document.getElementById('tb-title').innerHTML='Permisos de Trabajo';
+  else if(s==='nuevo') document.getElementById('tb-title').innerHTML='PT Trabajo en Altura <em>— REC-SHE-02-02</em>';
+  else if(s==='admin') document.getElementById('tb-title').innerHTML='Panel de Administración';
+  else if(s==='contratistas') document.getElementById('tb-title').innerHTML='Gestión de Contratistas';
+  else if(s==='reportes') document.getElementById('tb-title').innerHTML='Reportes y Auditoría';
+  document.querySelectorAll('.ni').forEach(ni=>{if(ni.getAttribute('onclick')&&ni.getAttribute('onclick').includes("'"+s+"'")) ni.classList.add('active');});
+  document.getElementById('ct').scrollTo(0,0);
+  if(s==='reportes') initReporteCharts();
+  closeNotif();
+}
 
-function navigate(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const el = document.getElementById('screen-' + screen);
-  if (el) el.classList.add('active');
-  document.getElementById('topbar-title').textContent = screens[screen] || screen;
-  document.querySelectorAll('.nav-item').forEach(item => {
-    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + screen + "'")) item.classList.add('active');
+// ── MODAL ──
+let currentSigTarget='';
+function showModal(id,target){
+  if(target) currentSigTarget=target;
+  if(id==='firmaModal') resetPin();
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',function(e){if(e.target===this) this.classList.remove('open');}));
+
+// ── ADMIN TABS ──
+function adTab(el,id){
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('[id^="at-"]').forEach(x=>x.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+// ── SIG TABS ──
+function sigTab(el,id){
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tabPin').style.display=id==='tabPin'?'block':'none';
+  document.getElementById('tabCanvas').style.display=id==='tabCanvas'?'block':'none';
+  if(id==='tabCanvas') initCanvas();
+}
+
+// ── PIN LOGIC ──
+let pin='';
+function resetPin(){pin='';updateDots();}
+function pinKey(k){
+  if(k==='*'||k==='C'){pin='';updateDots();document.getElementById('pinStatus').textContent='';return;}
+  if(pin.length>=6) return;
+  pin+=k;
+  updateDots();
+  if(pin.length===6) setTimeout(validatePin,300);
+}
+function updateDots(){
+  for(let i=0;i<6;i++){
+    const d=document.getElementById('pd'+i);
+    if(i<pin.length){d.textContent='●';d.className='pd f';}
+    else{d.textContent='·';d.className='pd';}
+  }
+}
+function validatePin(){
+  // Any 6-digit PIN is accepted (demo)
+  for(let i=0;i<6;i++){document.getElementById('pd'+i).className='pd ok';document.getElementById('pd'+i).textContent='✓';}
+  document.getElementById('pinStatus').innerHTML='<span style="color:var(--green)">✓ Firma digital certificada SHA-256 · Timestamp RFC 3161</span>';
+  setTimeout(()=>{
+    closeModal('firmaModal');
+    resetPin();
+    applySignature(currentSigTarget);
+    showToast('Firma digital registrada y certificada por ACHS ✓');
+  },1200);
+}
+function applySignature(t){
+  const now=new Date();
+  const ts=now.toLocaleDateString('es-CL')+' '+now.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
+  const ids={emisor:'sig-emisor',autoridad:'sig-autoridad',cierre:'sig-cierre',conoc:'sig-conoc'};
+  const el=document.getElementById(ids[t]);
+  if(el){
+    el.className='digi-btn signed';
+    el.innerHTML='✓ Firmado digitalmente — B. Sandoval · '+ts+' · SHA-256 verified';
+  }
+}
+
+// ── CANVAS SIG ──
+let drawing=false,sigCtx=null,hasSig=false;
+function initCanvas(){
+  const cv=document.getElementById('sigCanvas');
+  if(!cv) return;
+  sigCtx=cv.getContext('2d');
+  cv.style.width='100%';cv.style.height='120px';
+  cv.width=cv.offsetWidth;cv.height=120;
+  sigCtx.strokeStyle='#0D1B3E';sigCtx.lineWidth=2.5;sigCtx.lineCap='round';
+  cv.onmousedown=e=>{drawing=true;hasSig=true;sigCtx.beginPath();sigCtx.moveTo(pos(e,cv).x,pos(e,cv).y);document.getElementById('sigPh').style.opacity=0;};
+  cv.onmousemove=e=>{if(!drawing)return;const p=pos(e,cv);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();sigCtx.moveTo(p.x,p.y);};
+  cv.onmouseup=cv.onmouseleave=()=>{drawing=false;};
+  // Touch
+  cv.ontouchstart=e=>{e.preventDefault();drawing=true;hasSig=true;const t=e.touches[0];sigCtx.beginPath();sigCtx.moveTo(pos(t,cv).x,pos(t,cv).y);document.getElementById('sigPh').style.opacity=0;};
+  cv.ontouchmove=e=>{e.preventDefault();if(!drawing)return;const t=e.touches[0];const p=pos(t,cv);sigCtx.lineTo(p.x,p.y);sigCtx.stroke();sigCtx.moveTo(p.x,p.y);};
+  cv.ontouchend=()=>{drawing=false;};
+}
+function pos(e,cv){const r=cv.getBoundingClientRect();return{x:(e.clientX||e.pageX)-r.left,y:(e.clientY||e.pageY)-r.top};}
+function clearSig(){if(sigCtx){sigCtx.clearRect(0,0,sigCtx.canvas.width,sigCtx.canvas.height);document.getElementById('sigPh').style.opacity=1;hasSig=false;}}
+function confirmCanvasSig(){
+  if(!hasSig){alert('Por favor dibuje su firma primero.');return;}
+  closeModal('firmaModal');
+  applySignature(currentSigTarget);
+  showToast('Firma manuscrita digitalizada y certificada ✓');
+}
+
+// ── EMITIR CONFIRM ──
+function emitirConfirm(){
+  const p=document.getElementById('emitirPin').value;
+  if(p.length<6){document.getElementById('emitirPin').style.borderColor='var(--red)';return;}
+  closeModal('emitirModal');
+  document.getElementById('emitirPin').value='';
+  showToast('PTS PT-2026-0089 emitido correctamente. PDF generado y enviado a SHE, Emisor y Autoridad de Realización. ✓');
+}
+
+// ── CHECKLIST YN TOGGLE ──
+function yt(btn){
+  const row=btn.parentElement;
+  row.querySelectorAll('.yn').forEach(b=>{b.classList.remove('si','no','na');});
+  const t=btn.textContent.trim();
+  if(t==='Sí') btn.classList.add('si');
+  else if(t==='No') btn.classList.add('no');
+  else btn.classList.add('na');
+}
+
+// ── CLOCK ──
+function tick(){
+  const n=new Date();
+  document.getElementById('clk').textContent=n.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('clkd').textContent=n.toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'});
+}
+setInterval(tick,1000);tick();
+
+// ── NOTIFICATIONS ──
+function toggleNotif(){
+  const p=document.getElementById('notifPanel');
+  p.classList.toggle('show');
+}
+function closeNotif(){document.getElementById('notifPanel').classList.remove('show');}
+document.addEventListener('click',function(e){if(!e.target.closest('#notifPanel')&&!e.target.closest('.icon-btn')) closeNotif();});
+
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>{t.style.display='none';},4000);
+}
+
+// ── GPS MAP PIN CLICK ──
+let pinTimeout=null;
+function clickPin(evt,pt,tipo,area,estado,hora){
+  const info=document.getElementById('pin-info');
+  const map=document.getElementById('gpsMap').getBoundingClientRect();
+  const x=evt.clientX-map.left+12;
+  const y=evt.clientY-map.top-10;
+  info.style.left=Math.min(x,map.width-200)+'px';
+  info.style.top=Math.max(y-80,8)+'px';
+  const color=estado.includes('ACTIVO')?'#00B04F':estado.includes('REVISIÓN')?'#F5A623':estado.includes('APROBADO')?'#1A56A0':'#E31837';
+  info.innerHTML=`<strong style="color:${color}">${pt}</strong><br>${tipo}<br><span style="opacity:.8">${area}</span><br><span style="color:${color};font-weight:700">${estado}</span> · ${hora}`;
+  info.style.display='block';
+  if(pinTimeout) clearTimeout(pinTimeout);
+  pinTimeout=setTimeout(()=>{info.style.display='none';},3500);
+}
+function centerMap(){showToast('Mapa centrado en Planta Nestlé Los Andes ✓');}
+
+// ── COUNTER ANIMATION ──
+function animCounters(){
+  document.querySelectorAll('[data-target]').forEach(el=>{
+    const target=parseInt(el.getAttribute('data-target'));
+    const suf=el.getAttribute('data-suffix')||'';
+    let cur=0;const step=Math.ceil(target/30);
+    const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=cur+suf;if(cur>=target) clearInterval(t);},40);
   });
-  document.getElementById('content').scrollTo(0, 0);
 }
+setTimeout(animCounters,300);
 
-function showModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); }));
-
-function ynToggle(btn) {
-  const cell = btn.closest('td');
-  cell.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active-si','active-no','active-na'));
-  const txt = btn.textContent.trim();
-  if (txt === 'Sí') btn.classList.add('active-si');
-  else if (txt === 'No') btn.classList.add('active-no');
-  else btn.classList.add('active-na');
-}
-
-function toggleYN(btn) {
-  const row = btn.parentElement;
-  row.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active-si','active-no'));
-  btn.classList.add(btn.textContent === 'Sí' ? 'active-si' : 'active-no');
-}
-
-window.addEventListener('load', function() {
-  const ctx1 = document.getElementById('chartTipo');
-  if (ctx1) new Chart(ctx1, { type:'bar', data:{ labels:['Altura','Esp. Confinado','Hot Work','Eléctrico','Excavación','Energías Pel.'], datasets:[{label:'Permisos',data:[38,22,29,18,25,10],backgroundColor:['#4472C4','#ED7D31','#A9311A','#7030A0','#FFC000','#375623'],borderRadius:6}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#F0F0F0'}},x:{grid:{display:false}}}}});
-  const ctx2 = document.getElementById('chartEstado');
-  if (ctx2) new Chart(ctx2, { type:'doughnut', data:{ labels:['Activos','Aprobados','En Revisión','Completados','Rechazados'], datasets:[{data:[8,5,3,24,7],backgroundColor:['#70AD47','#4472C4','#FFC000','#375623','#C0392B'],borderWidth:2,borderColor:'#fff'}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}},cutout:'65%'}});
+// ── CHARTS INIT ──
+window.addEventListener('load',()=>{
+  // Estado donut
+  const ctx2=document.getElementById('chartEstado');
+  if(ctx2) new Chart(ctx2,{type:'doughnut',data:{labels:['Activos','Aprobados','En Revisión','Completados','Rechazados'],datasets:[{data:[8,5,3,24,7],backgroundColor:['#00B04F','#1A56A0','#F5A623','#375623','#E31837'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},cutout:'62%'}});
 });
+
+function initReporteCharts(){
+  const c1=document.getElementById('chTipo');
+  if(c1&&!c1._done){c1._done=true;new Chart(c1,{type:'bar',data:{labels:['Altura','Hot Work','Eléctrico','Esp. Confinado','Excavación','Energías Pel.'],datasets:[{label:'PT',data:[38,29,18,22,25,10],backgroundColor:['#1A56A0','#E31837','#7C3AED','#F5A623','#F59E0B','#00B04F'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#F0F0F0'}},x:{grid:{display:false}}}}});}
+  const c2=document.getElementById('chTime');
+  if(c2&&!c2._done){c2._done=true;new Chart(c2,{type:'line',data:{labels:['01/05','08/05','15/05','22/05','29/05','03/06'],datasets:[{label:'Min',data:[45,38,32,25,21,18],borderColor:'#E31837',backgroundColor:'rgba(227,24,55,.1)',fill:true,tension:0.4,pointBackgroundColor:'#E31837',pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#F0F0F0'}},x:{grid:{display:false}}}}});}
+}
 </script>
 </body>
 </html>

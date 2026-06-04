@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PermitPro — Demo Nestlé</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --blue-dark: #1F3864; --blue-mid: #2E75B6; --blue-light: #D5E8F0; --blue-accent: #4472C4;
+    --green: #375623; --green-light: #E2EFDA; --green-mid: #70AD47;
+    --orange: #C55A11; --orange-light: #FCE4D6;
+    --red: #C0392B; --red-light: #FDECEA;
+    --yellow: #F39C12; --yellow-light: #FEF9E7;
+    --gray-light: #F5F7FA; --gray-med: #E8ECF0; --gray-dark: #6B7280;
+    --white: #FFFFFF; --text: #1F2937; --text-light: #6B7280;
+    --nestle-red: #C8102E; --nestle-dark: #1A1A1A;
+    --sidebar-w: 240px; --header-h: 60px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.10); --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--gray-light); color: var(--text); font-size: 14px; display: flex; height: 100vh; overflow: hidden; }
+
+  /* SIDEBAR */
+  #sidebar { width: var(--sidebar-w); background: var(--blue-dark); display: flex; flex-direction: column; height: 100vh; flex-shrink: 0; z-index: 100; }
+  .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .sidebar-logo .logo-text { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: 1px; }
+  .sidebar-logo .logo-sub { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; margin-top: 2px; }
+  .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+  .nav-section { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; padding: 12px 20px 6px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; color: rgba(255,255,255,0.7); transition: all 0.15s; border-left: 3px solid transparent; font-size: 13px; }
+  .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .nav-item.active { background: rgba(255,255,255,0.12); color: #fff; border-left-color: #4FC3F7; }
+  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-badge { margin-left: auto; background: #EF4444; color: #fff; border-radius: 10px; padding: 1px 7px; font-size: 10px; font-weight: 700; }
+  .sidebar-user { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .user-info { display: flex; align-items: center; gap: 10px; }
+  .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--blue-mid); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .user-name { color: #fff; font-size: 12px; font-weight: 600; }
+  .user-role { color: rgba(255,255,255,0.5); font-size: 10px; }
+
+  /* MAIN */
+  #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  #topbar { height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--gray-med); display: flex; align-items: center; padding: 0 24px; gap: 16px; flex-shrink: 0; }
+  .topbar-title { font-size: 17px; font-weight: 700; color: var(--blue-dark); flex: 1; }
+  .search-box { display: flex; align-items: center; gap: 8px; background: var(--gray-light); border: 1px solid var(--gray-med); border-radius: 8px; padding: 6px 12px; width: 280px; }
+  .search-box input { border: none; background: none; outline: none; font-size: 13px; color: var(--text); width: 100%; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.15s; }
+  .btn-primary { background: var(--blue-mid); color: #fff; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-success { background: var(--green-mid); color: #fff; }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-outline { background: #fff; color: var(--blue-mid); border: 1px solid var(--blue-mid); }
+  .btn-nestle { background: var(--nestle-red); color: #fff; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+  .notif-btn { position: relative; background: none; border: none; cursor: pointer; font-size: 20px; color: var(--gray-dark); padding: 4px; }
+  .notif-dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: #EF4444; border-radius: 50%; border: 2px solid #fff; }
+  #content { flex: 1; overflow-y: auto; padding: 24px; scrollbar-width: thin; }
+  #content::-webkit-scrollbar { width: 6px; }
+  #content::-webkit-scrollbar-thumb { background: var(--gray-med); border-radius: 3px; }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; border-top: 4px solid transparent; }
+  .kpi-card.green { border-top-color: var(--green-mid); }
+  .kpi-card.yellow { border-top-color: var(--yellow); }
+  .kpi-card.red { border-top-color: var(--red); }
+  .kpi-card.blue { border-top-color: var(--blue-mid); }
+  .kpi-icon { font-size: 28px; margin-bottom: 8px; }
+  .kpi-num { font-size: 36px; font-weight: 800; color: var(--blue-dark); line-height: 1; }
+  .kpi-label { font-size: 12px; color: var(--text-light); margin-top: 4px; font-weight: 500; }
+  .kpi-trend { font-size: 11px; margin-top: 8px; }
+  .kpi-trend.up { color: var(--green-mid); }
+  .kpi-trend.down { color: var(--red); }
+  .dash-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--blue-dark); color: #fff; padding: 10px 14px; font-size: 12px; text-align: left; font-weight: 600; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gray-med); font-size: 13px; }
+  tr:hover td { background: var(--gray-light); }
+
+  /* BADGES */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-yellow { background: var(--yellow-light); color: #92610C; }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-orange { background: var(--orange-light); color: var(--orange); }
+  .badge-gray { background: var(--gray-med); color: var(--gray-dark); }
+  .type-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .type-alt { background: #EBF3FB; color: #1565C0; }
+  .type-esc { background: #FFF3E0; color: #E65100; }
+  .type-hot { background: #FFEBEE; color: #B71C1C; }
+  .type-ele { background: #F3E5F5; color: #6A1B9A; }
+  .type-exc { background: #FFFDE7; color: #F57F17; }
+  .type-ene { background: #E8F5E9; color: #1B5E20; }
+
+  /* ACTIVITY */
+  .activity-list { display: flex; flex-direction: column; gap: 0; }
+  .activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gray-med); }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .activity-dot.green { background: var(--green-mid); }
+  .activity-dot.blue { background: var(--blue-mid); }
+  .activity-dot.red { background: var(--red); }
+  .activity-dot.yellow { background: var(--yellow); }
+  .activity-dot.orange { background: var(--orange); }
+  .activity-text { font-size: 12px; color: var(--text); line-height: 1.5; }
+  .activity-time { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+  /* FILTER BAR */
+  .filter-bar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .filter-select { border: 1px solid var(--gray-med); border-radius: 8px; padding: 7px 12px; font-size: 13px; color: var(--text); background: #fff; outline: none; }
+
+  /* SECTION HEADER */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--blue-dark); }
+  .chart-wrap { position: relative; height: 220px; }
+  .alert-banner { border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .alert-warning { background: var(--orange-light); color: var(--orange); border: 1px solid #F5CBA7; }
+  .alert-info { background: var(--blue-light); color: var(--blue-dark); border: 1px solid #AED6F1; }
+  .alert-success { background: var(--green-light); color: var(--green); border: 1px solid #ABEBC6; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-box { background: #fff; border-radius: 14px; padding: 28px; max-width: 520px; width: 90%; box-shadow: var(--shadow-lg); transform: scale(0.95); transition: transform 0.2s; }
+  .modal-overlay.open .modal-box { transform: scale(1); }
+  .modal-title { font-size: 18px; font-weight: 700; color: var(--blue-dark); margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  label { font-size: 12px; font-weight: 600; color: var(--text-light); }
+  input[type=text], input[type=date], input[type=time], input[type=number], select, textarea {
+    border: 1px solid var(--gray-med); border-radius: 8px; padding: 9px 12px; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.15s; background: #fff; font-family: inherit; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 3px rgba(46,117,182,0.1); }
+  textarea { resize: vertical; min-height: 70px; }
+  .required-mark { color: var(--red); }
+
+  /* ===== NESTLÉ PERMIT FORM ===== */
+  .nestle-form { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; max-width: 960px; margin: 0 auto; }
+
+  /* Nestlé Header */
+  .nestle-header { background: var(--white); border-bottom: 3px solid var(--nestle-red); padding: 16px 24px; display: flex; align-items: flex-start; gap: 20px; }
+  .nestle-logo-area { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 100px; }
+  .nestle-brand { font-size: 22px; font-weight: 900; color: var(--nestle-red); letter-spacing: -0.5px; }
+  .nestle-she { font-size: 11px; font-weight: 700; color: #333; letter-spacing: 2px; }
+  .nestle-title-area { flex: 1; }
+  .nestle-title { font-size: 20px; font-weight: 700; color: var(--nestle-dark); }
+  .nestle-subtitle { font-size: 11px; color: #555; margin-top: 4px; line-height: 1.4; }
+  .nestle-meta { display: flex; flex-direction: column; gap: 6px; min-width: 200px; }
+  .nestle-meta-row { display: flex; align-items: center; gap: 8px; }
+  .nestle-meta-label { font-size: 11px; font-weight: 600; color: #555; white-space: nowrap; }
+  .nestle-meta-input { border: none; border-bottom: 1.5px solid #999; padding: 2px 6px; font-size: 12px; outline: none; flex: 1; min-width: 80px; background: transparent; }
+
+  /* Form sections */
+  .nf-section { padding: 0 24px 16px; border-bottom: 1px solid var(--gray-med); }
+  .nf-section:last-child { border-bottom: none; }
+  .nf-section-header { background: var(--blue-dark); color: #fff; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; padding: 6px 24px; margin: 0 -24px 14px; }
+  .nf-section-header.red { background: var(--nestle-red); }
+  .nf-section-header.green { background: var(--green); }
+  .nf-section-header.orange { background: var(--orange); }
+  .nf-field-row { display: flex; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+  .nf-field { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 200px; }
+  .nf-field label { font-size: 11px; font-weight: 600; color: #555; }
+  .nf-field input, .nf-field select, .nf-field textarea { border: none; border-bottom: 1.5px solid #ccc; border-radius: 0; padding: 4px 2px; font-size: 13px; background: transparent; }
+  .nf-field input:focus, .nf-field select:focus, .nf-field textarea:focus { border-color: var(--blue-mid); box-shadow: none; }
+  .nf-field textarea { min-height: 50px; border: 1.5px solid #ccc; border-radius: 4px; padding: 6px; background: var(--gray-light); }
+
+  /* Pre-permit checks table */
+  .check-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .check-table th { background: #f0f4f8; color: var(--text); padding: 6px 10px; font-size: 11px; border: 1px solid #ccc; text-align: center; }
+  .check-table td { padding: 5px 10px; border: 1px solid #ddd; vertical-align: top; }
+  .check-table .cat-cell { font-weight: 700; color: var(--blue-dark); background: #f8faff; font-size: 11px; text-align: center; vertical-align: middle; }
+  .check-table .desc-cell { font-size: 11px; line-height: 1.5; color: var(--text); }
+  .check-table .radio-cell { text-align: center; vertical-align: middle; }
+  .yn-group { display: flex; gap: 8px; justify-content: center; }
+  .yn-btn { width: 32px; height: 26px; border-radius: 4px; border: 1.5px solid #ccc; background: #fff; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.12s; color: #666; }
+  .yn-btn.active-si { background: var(--green-light); border-color: var(--green-mid); color: var(--green); }
+  .yn-btn.active-no { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .yn-btn.active-na { background: #f0f0f0; border-color: #999; color: #555; }
+
+  /* Blood pressure table */
+  .bp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .bp-table th { background: var(--blue-dark); color: #fff; padding: 7px 10px; border: 1px solid #ccc; font-size: 11px; text-align: center; }
+  .bp-table td { padding: 4px 6px; border: 1px solid #ddd; }
+  .bp-table td input { border: none; border-bottom: 1px solid #ccc; width: 100%; padding: 2px 4px; font-size: 12px; background: transparent; outline: none; }
+  .bp-apto { display: flex; gap: 10px; justify-content: center; }
+  .bp-radio { display: flex; align-items: center; gap: 3px; font-size: 11px; cursor: pointer; }
+  .bp-radio input { width: auto; }
+
+  /* Checklist precautions */
+  .prec-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .prec-table th { background: #f0f4f8; color: var(--text); padding: 6px 10px; font-size: 11px; border: 1px solid #ccc; text-align: center; }
+  .prec-table td { padding: 5px 10px; border: 1px solid #ddd; vertical-align: top; }
+  .prec-table .cat-cell { font-weight: 700; color: var(--blue-dark); background: #f8faff; font-size: 11px; text-align: center; vertical-align: middle; }
+
+  /* Signatures */
+  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .sig-box { border: 1.5px solid #ccc; border-radius: 6px; padding: 12px; }
+  .sig-box-title { font-weight: 700; color: var(--blue-dark); font-size: 12px; margin-bottom: 6px; }
+  .sig-box-desc { font-size: 10px; color: #666; line-height: 1.4; margin-bottom: 10px; font-style: italic; }
+  .sig-field-row { display: flex; gap: 12px; margin-top: 8px; }
+  .sig-field { flex: 1; }
+  .sig-field label { font-size: 10px; font-weight: 600; color: #555; display: block; margin-bottom: 2px; }
+  .sig-field input { border: none; border-bottom: 1.5px solid #999; width: 100%; font-size: 12px; padding: 3px 0; background: transparent; outline: none; }
+
+  /* Part 2 separator */
+  .part2-header { background: var(--blue-dark); color: #fff; text-align: center; font-size: 14px; font-weight: 700; padding: 10px; margin: 0 -24px; letter-spacing: 1px; }
+
+  /* Inspection visits table */
+  .insp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .insp-table th { background: var(--blue-dark); color: #fff; padding: 7px 10px; border: 1px solid #ccc; font-size: 11px; }
+  .insp-table td { padding: 6px 10px; border: 1px solid #ddd; height: 34px; }
+  .insp-table td input { border: none; width: 100%; font-size: 12px; background: transparent; outline: none; }
+
+  /* Progress/stepper */
+  .permit-stepper { display: flex; align-items: center; gap: 0; background: var(--white); border-radius: 8px; box-shadow: var(--shadow); padding: 12px 20px; margin-bottom: 20px; overflow-x: auto; }
+  .pstep { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 90px; }
+  .pstep-circle { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--gray-med); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--gray-dark); background: #fff; }
+  .pstep.done .pstep-circle { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+  .pstep.active .pstep-circle { background: var(--blue-mid); border-color: var(--blue-mid); color: #fff; }
+  .pstep-label { font-size: 9px; color: var(--text-light); text-align: center; font-weight: 500; }
+  .pstep.active .pstep-label { color: var(--blue-mid); font-weight: 700; }
+  .pstep.done .pstep-label { color: var(--green-mid); }
+  .pstep-line { flex: 1; height: 2px; background: var(--gray-med); min-width: 20px; }
+  .pstep-line.done { background: var(--green-mid); }
+
+  /* Print/PDF preview banner */
+  .pdf-banner { background: var(--blue-dark); color: #fff; border-radius: 8px; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .pdf-banner-text { font-size: 12px; }
+  .pdf-banner strong { font-size: 14px; display: block; }
+
+  /* Nestle code ref */
+  .nestle-ref { font-size: 10px; color: #999; text-align: right; padding: 4px 24px; }
+
+  /* Valid-until banner */
+  .valid-until { background: #FFF3CD; border: 1.5px solid #FBBF24; border-radius: 6px; padding: 7px 14px; margin-bottom: 14px; font-size: 12px; color: #92610C; display: flex; align-items: center; gap: 8px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">🛡 PermitPro</div>
+    <div class="logo-sub">NESTLÉ · PREVENCIÓN DE RIESGOS</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="navigate('dashboard')"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="navigate('permisos')"><span class="nav-icon">📋</span> Permisos de Trabajo <span class="nav-badge">3</span></div>
+    <div class="nav-section">Gestión</div>
+    <div class="nav-item" onclick="navigate('nuevo')"><span class="nav-icon">➕</span> Nuevo Permiso PT Altura</div>
+    <div class="nav-item" onclick="navigate('contratistas')"><span class="nav-icon">🏢</span> Contratistas</div>
+    <div class="nav-section">Reportes</div>
+    <div class="nav-item" onclick="navigate('reportes')"><span class="nav-icon">📈</span> Reportes y Auditoría</div>
+    <div class="nav-item"><span class="nav-icon">⚙️</span> Configuración</div>
+  </nav>
+  <div class="sidebar-user">
+    <div class="user-info">
+      <div class="user-avatar">JS</div>
+      <div><div class="user-name">Juan Sepúlveda</div><div class="user-role">Emisor de Permiso · SSOMA</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="search-box"><span>🔍</span><input type="text" placeholder="Buscar permiso, área, contratista…"></div>
+    <button class="notif-btn" onclick="showModal('notifModal')">🔔<span class="notif-dot"></span></button>
+  </div>
+
+  <div id="content">
+
+    <!-- ====== DASHBOARD ====== -->
+    <div class="screen active" id="screen-dashboard">
+      <div class="alert-banner alert-warning">
+        <span>⚠️</span><strong>2 permisos activos vencen en menos de 2 horas.</strong> Revisar y extender si corresponde.
+        <span style="margin-left:auto;cursor:pointer;opacity:0.6" onclick="this.parentElement.remove()">✕</span>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card green"><div class="kpi-icon">🟢</div><div class="kpi-num">8</div><div class="kpi-label">Permisos Activos Hoy</div><div class="kpi-trend up">↑ +2 vs ayer</div></div>
+        <div class="kpi-card yellow"><div class="kpi-icon">⏳</div><div class="kpi-num">3</div><div class="kpi-label">Pendientes Aprobación</div><div class="kpi-trend down">⚠ Más de 30 min en cola</div></div>
+        <div class="kpi-card red"><div class="kpi-icon">🔴</div><div class="kpi-num">1</div><div class="kpi-label">Vencidos Sin Cerrar</div><div class="kpi-trend down">Requiere acción inmediata</div></div>
+        <div class="kpi-card blue"><div class="kpi-icon">✅</div><div class="kpi-num">24</div><div class="kpi-label">Completados Esta Semana</div><div class="kpi-trend up">↑ 92% cerrados a tiempo</div></div>
+      </div>
+      <div class="dash-grid">
+        <div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="section-header">
+              <div class="section-title">Permisos Activos Ahora</div>
+              <button class="btn btn-outline btn-sm" onclick="navigate('permisos')">Ver todos</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>N° PT</th><th>Tipo</th><th>Área</th><th>Contratista</th><th>Vence</th><th>Estado</th><th></th></tr></thead>
+                <tbody>
+                  <tr style="cursor:pointer" onclick="navigate('nuevo')"><td><strong>PT-2026-0089</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Planta Norte – Línea 3</td><td>Manuales Ltda.</td><td><span style="color:var(--red)">⚠ 13:30</span></td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();navigate('nuevo')">Ver PT</button></td></tr>
+                  <tr style="cursor:pointer"><td><strong>PT-2026-0090</strong></td><td><span class="type-pill type-hot">🔥 Hot Work</span></td><td>Sala Caldera – B2</td><td>TecnoServ S.A.</td><td>15:00</td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-outline btn-sm">Ver PT</button></td></tr>
+                  <tr style="cursor:pointer"><td><strong>PT-2026-0091</strong></td><td><span class="type-pill type-ele">⚡ Eléctrico</span></td><td>Subestación Principal</td><td>Elecrom Chile</td><td>16:30</td><td><span class="badge badge-blue">● Aprobado</span></td><td><button class="btn btn-outline btn-sm">Ver PT</button></td></tr>
+                  <tr style="cursor:pointer"><td><strong>PT-2026-0092</strong></td><td><span class="type-pill type-exc">⛏ Excavación</span></td><td>Patio de Maniobras</td><td>CivTec Obras</td><td>17:00</td><td><span class="badge badge-yellow">● En Revisión</span></td><td><button class="btn btn-outline btn-sm">Ver PT</button></td></tr>
+                  <tr style="cursor:pointer"><td><strong>PT-2026-0085</strong></td><td><span class="type-pill type-esc">🕳 Esp. Confinado</span></td><td>Tanque TK-04</td><td>Manuales Ltda.</td><td><span style="color:var(--red)">⚠ VENCIDO</span></td><td><span class="badge badge-red">● Vencido</span></td><td><button class="btn btn-danger btn-sm">Atender</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card"><div class="section-header"><div class="section-title">Permisos por Tipo — Últimos 30 días</div></div><div class="chart-wrap"><canvas id="chartTipo"></canvas></div></div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="section-title" style="margin-bottom:14px">Actividad Reciente</div>
+            <div class="activity-list">
+              <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-text"><strong>PT-0090</strong> aprobado por <strong>J. Sepúlveda</strong></div><div class="activity-time">Hace 12 min</div></div></div>
+              <div class="activity-item"><div class="activity-dot blue"></div><div><div class="activity-text"><strong>PT-0091</strong> enviado por <strong>P. Morales</strong> (Elecrom)</div><div class="activity-time">Hace 28 min</div></div></div>
+              <div class="activity-item"><div class="activity-dot orange"></div><div><div class="activity-text"><strong>PT-0089</strong> próximo a vencer — alerta enviada</div><div class="activity-time">Hace 35 min</div></div></div>
+              <div class="activity-item"><div class="activity-dot red"></div><div><div class="activity-text"><strong>PT-0088</strong> <span style="color:var(--red)">rechazado</span> — área sin señalizar</div><div class="activity-time">Hace 1h 10min</div></div></div>
+              <div class="activity-item"><div class="activity-dot green"></div><div><div class="activity-text"><strong>PT-0087</strong> cerrado conforme por <strong>R. Díaz</strong></div><div class="activity-time">Hace 2h 5min</div></div></div>
+            </div>
+          </div>
+          <div class="card"><div class="section-title" style="margin-bottom:14px">Distribución por Estado</div><div class="chart-wrap" style="height:180px"><canvas id="chartEstado"></canvas></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== LISTA PERMISOS ====== -->
+    <div class="screen" id="screen-permisos">
+      <div class="filter-bar">
+        <select class="filter-select"><option>Todos los estados</option><option>Activo</option><option>Aprobado</option><option>En Revisión</option></select>
+        <select class="filter-select"><option>Todos los tipos</option><option>Trabajo en Altura</option><option>Hot Work</option></select>
+        <div style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm">⬇ Exportar</button>
+          <button class="btn btn-nestle" onclick="navigate('nuevo')">➕ Nuevo PT Altura</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>N° Permiso</th><th>Tipo</th><th>Área</th><th>Contratista</th><th>Emisor</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody>
+              <tr style="cursor:pointer" onclick="navigate('nuevo')"><td><strong style="color:var(--blue-mid)">PT-2026-0089</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Planta Norte – Línea 3</td><td>Manuales Ltda.</td><td>J. Sepúlveda</td><td>03/06/2026</td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();navigate('nuevo')">Ver / Editar</button></td></tr>
+              <tr><td><strong style="color:var(--blue-mid)">PT-2026-0090</strong></td><td><span class="type-pill type-hot">🔥 Hot Work</span></td><td>Sala Caldera – B2</td><td>TecnoServ S.A.</td><td>J. Sepúlveda</td><td>03/06/2026</td><td><span class="badge badge-green">● Activo</span></td><td><button class="btn btn-outline btn-sm">Ver PDF</button></td></tr>
+              <tr><td><strong style="color:var(--blue-mid)">PT-2026-0088</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Techo Nave Industrial</td><td>CivTec Obras</td><td>R. Díaz</td><td>01/06/2026</td><td><span class="badge badge-red">✕ Rechazado</span></td><td><button class="btn btn-outline btn-sm">Ver motivo</button></td></tr>
+              <tr><td><strong style="color:var(--blue-mid)">PT-2026-0083</strong></td><td><span class="type-pill type-alt">🪜 Altura</span></td><td>Sala Bombas – Sótano</td><td>Manuales Ltda.</td><td>J. Sepúlveda</td><td>28/05/2026</td><td><span class="badge badge-gray">✓ Completado</span></td><td><button class="btn btn-outline btn-sm">Ver PDF</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== PERMISO NESTLÉ - TRABAJO EN ALTURA ====== -->
+    <div class="screen" id="screen-nuevo">
+
+      <!-- Status stepper -->
+      <div class="permit-stepper">
+        <div class="pstep done"><div class="pstep-circle">✓</div><div class="pstep-label">Predicción<br>de Riesgo</div></div>
+        <div class="pstep-line done"></div>
+        <div class="pstep active"><div class="pstep-circle">2</div><div class="pstep-label">Llenado<br>del PT</div></div>
+        <div class="pstep-line"></div>
+        <div class="pstep"><div class="pstep-circle">3</div><div class="pstep-label">Medidas<br>Previas</div></div>
+        <div class="pstep-line"></div>
+        <div class="pstep"><div class="pstep-circle">4</div><div class="pstep-label">Emisión y<br>Aceptación</div></div>
+        <div class="pstep-line"></div>
+        <div class="pstep"><div class="pstep-circle">5</div><div class="pstep-label">Ejecución<br>del Trabajo</div></div>
+        <div class="pstep-line"></div>
+        <div class="pstep"><div class="pstep-circle">6</div><div class="pstep-label">Cierre<br>del PT</div></div>
+      </div>
+
+      <div class="pdf-banner">
+        <div class="pdf-banner-text"><strong>PT-2026-0089 · Trabajo en Altura · Planta Norte – Línea 3</strong>Estado actual: En llenado · REC-SHE-02-02 · Versión 2.0</div>
+        <div style="display:flex;gap:8px"><button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,0.5)">⬇ Vista PDF</button><button class="btn btn-success btn-sm" onclick="showModal('emitirModal')">✓ Emitir y Aceptar</button></div>
+      </div>
+
+      <!-- NESTLÉ FORM -->
+      <div class="nestle-form">
+
+        <!-- HEADER -->
+        <div class="nestle-header">
+          <div class="nestle-logo-area">
+            <div class="nestle-brand">Nestlé</div>
+            <div class="nestle-she">SHE · Safety Health<br>Environment</div>
+          </div>
+          <div class="nestle-title-area">
+            <div class="nestle-title">Permiso de trabajo: Trabajos en altura</div>
+            <div class="nestle-subtitle">Este permiso de trabajo es obligatorio para cualquier trabajo en que una persona pueda caer de &gt;1,8 mts de altura.</div>
+          </div>
+          <div class="nestle-meta">
+            <div class="nestle-meta-row"><span class="nestle-meta-label">N° PTS (folio)</span><input class="nestle-meta-input" type="text" value="PT-2026-0089"></div>
+            <div class="nestle-meta-row"><span class="nestle-meta-label">Fecha de emisión</span><input class="nestle-meta-input" type="text" value="03/06/2026"></div>
+            <div class="nestle-meta-row"><span class="nestle-meta-label">Hora de emisión</span><input class="nestle-meta-input" type="text" value="08:45"></div>
+          </div>
+        </div>
+
+        <!-- Valid until -->
+        <div style="padding:10px 24px 0">
+          <div class="valid-until">
+            <span>⏰</span>
+            <strong>Este permiso no es válido después de:</strong>
+            <input type="text" style="border:none;border-bottom:1.5px solid #FBBF24;outline:none;font-size:12px;padding:2px 6px;background:transparent;width:200px" value="03/06/2026 – 17:00 hrs">
+          </div>
+        </div>
+
+        <!-- SECTION 1: UBICACIÓN Y DESCRIPCIÓN -->
+        <div class="nf-section" style="padding-top:14px">
+          <div class="nf-field-row">
+            <div class="nf-field" style="flex:2">
+              <label>UBICACIÓN del trabajo (especificar tanto como sea posible)</label>
+              <input type="text" value="Planta Norte – Línea 3, Pasillo Norte entre columnas A-7 y A-12, altura 6 mts">
+            </div>
+          </div>
+          <div class="nf-field-row" style="margin-top:10px">
+            <div class="nf-field" style="flex:2">
+              <label>DESCRIPCIÓN del trabajo</label>
+              <textarea>Reemplazo de 4 luminarias LED en pasillo norte. Se utilizará andamio certificado. Altura máxima de trabajo: 6 metros.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: PREDICCIÓN DE RIESGO -->
+        <div class="nf-section">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;padding:10px 0;font-size:12px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <strong>¿Está la Predicción de riesgo completa y revisada?</strong>
+              <button class="yn-btn active-si" onclick="toggleYN(this,'si')">Sí</button>
+              <button class="yn-btn" onclick="toggleYN(this,'no')">No</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <strong>Número de predicción de riesgo:</strong>
+              <input type="text" style="border:none;border-bottom:1.5px solid #ccc;width:120px;font-size:12px;outline:none;padding:2px 4px" value="PR-2026-112">
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <strong>¿Se informó a la Autoridad del área y a las personas afectadas?</strong>
+              <button class="yn-btn active-si" onclick="toggleYN(this,'si')">Sí</button>
+              <button class="yn-btn" onclick="toggleYN(this,'no')">No</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: CHECKLIST PREVIO -->
+        <div class="nf-section">
+          <div class="nf-section-header">MEDIDAS TOMADAS PREVIAS AL PERMISO &nbsp;(Ej. revisión de equipamiento, herramientas, trabajos preliminares, EPP establecidos y revisados)</div>
+          <table class="check-table">
+            <thead>
+              <tr><th style="width:120px">Categoría</th><th>Verificación</th><th style="width:50px">Sí</th><th style="width:50px">N/A</th></tr>
+            </thead>
+            <tbody id="checkPrevia">
+              <!-- Área de trabajo y acceso -->
+              <tr><td class="cat-cell" rowspan="7">Área de trabajo y acceso</td><td class="desc-cell">Se ha confirmado la capacidad de soporte de carga de servicio del área de trabajo. El límite de carga de servicio está claramente etiquetado.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Área de trabajo equipada en todos los bordes con rodapié, baranda a la altura de la rodilla y pasamano. Se da prioridad a las barandas por encima de los sistemas de protección contra caídas.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Trabajadores capacitados arman el andamio móvil y es revisado por una persona competente. Incorporar tarjetas verde y roja, solo utilizar andamios modelo Layer en uso, conexión o roseta.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Se han revisado las escaleras de acceso y están en condición segura de trabajo.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">La plataforma de trabajo es estable y/o está fija. (En caso de techumbre esta se encuentra seca, sin rocío, ni lluvia)</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Plataformas elevadoras de trabajo móvil son apropiadas para la tarea y están en condición segura. Se ha realizado una inspección formal dentro de los últimos 6 meses. Incorporar Check List diario.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-na" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Se han demarcado las áreas a nivel de piso con barreras temporales y señalización de advertencia.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <!-- Protección debajo -->
+              <tr><td class="cat-cell" rowspan="3">Protección de áreas debajo del trabajo</td><td class="desc-cell">Se han puesto protecciones o redes de seguridad para evitar caída de material.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Al trabajar con escaleras, una persona está afirmando la escalera mientras se trabaja sobre ella.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-na" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Se ha instalado un conducto de vaciado para material de desecho.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <!-- Emergencia -->
+              <tr><td class="cat-cell" rowspan="2">Emergencia</td><td class="desc-cell">Se ha acordado y comunicado un plan de rescate en caso de emergencia, incluido cómo llamar por ayuda.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Hay un equipo de rescate adecuado en el lugar (especificar a continuación).</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <!-- Capacidad -->
+              <tr><td class="cat-cell">Capacidad del trabajador</td><td class="desc-cell">Los trabajadores son competentes para trabajar y realizar las actividades de forma segura.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- SECTION 4: CONTROL DE PRESIÓN ARTERIAL -->
+        <div class="nf-section">
+          <div class="nf-section-header" style="text-align:center;font-size:13px">CONTROL DE PRESIÓN ARTERIAL</div>
+          <table class="bp-table">
+            <thead>
+              <tr><th style="width:40px">N°</th><th>NOMBRE DEL TRABAJADOR</th><th style="width:140px">RUT</th><th style="width:100px">PRESIÓN</th><th style="width:130px">APTO</th></tr>
+            </thead>
+            <tbody>
+              <tr><td style="text-align:center;font-size:11px;color:#999">1</td><td><input type="text" value="Carlos Muñoz Reyes" placeholder="Nombre completo"></td><td><input type="text" value="15.234.567-8"></td><td><input type="text" value="120/80" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto1" checked> Sí</label><label class="bp-radio"><input type="radio" name="apto1"> No</label></div></td></tr>
+              <tr><td style="text-align:center;font-size:11px;color:#999">2</td><td><input type="text" value="Luis Vargas Torres" placeholder="Nombre completo"></td><td><input type="text" value="12.987.654-3"></td><td><input type="text" value="118/75" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto2" checked> Sí</label><label class="bp-radio"><input type="radio" name="apto2"> No</label></div></td></tr>
+              <tr><td style="text-align:center;font-size:11px;color:#999">3</td><td><input type="text" value="Ana Fuentes Soto" placeholder="Nombre completo"></td><td><input type="text" value="16.543.210-K"></td><td><input type="text" value="122/78" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto3" checked> Sí</label><label class="bp-radio"><input type="radio" name="apto3"> No</label></div></td></tr>
+              <tr><td style="text-align:center;font-size:11px;color:#999">4</td><td><input type="text" placeholder="Nombre completo"></td><td><input type="text" placeholder="RUT"></td><td><input type="text" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto4"> Sí</label><label class="bp-radio"><input type="radio" name="apto4"> No</label></div></td></tr>
+              <tr><td style="text-align:center;font-size:11px;color:#999">5</td><td><input type="text" placeholder="Nombre completo"></td><td><input type="text" placeholder="RUT"></td><td><input type="text" placeholder="SIS/DIA"></td><td><div class="bp-apto"><label class="bp-radio"><input type="radio" name="apto5"> Sí</label><label class="bp-radio"><input type="radio" name="apto5"> No</label></div></td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px;display:flex;gap:16px;align-items:center">
+            <div class="nf-field" style="flex:1">
+              <label>Nombre paramédico</label>
+              <input type="text" value="Pamela Riquelme (Enfermera SHE)" placeholder="Nombre y cargo del paramédico">
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <div class="nf-field">
+              <label>Medidas adicionales que han sido tomadas previas al permiso: <span style="font-size:10px;color:#888">(En caso de realizar Bloqueo LOTO, incorporar Check List de realización LOTO)</span></label>
+              <textarea placeholder="Describa aquí medidas adicionales tomadas…">Verificación de estructura del andamio por persona competente. Demarcación de perímetro con valla roja. Coordinación con Jefe de Producción para detención momentánea de línea.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: PRECAUCIONES DURANTE EL TRABAJO -->
+        <div class="nf-section">
+          <div class="nf-section-header red">PRECAUCIONES requeridas durante el trabajo &nbsp;(Ej. forma segura de trabajo, utilizar EPP)</div>
+          <table class="prec-table">
+            <thead><tr><th style="width:120px">Categoría</th><th>Precaución</th><th style="width:50px">Sí</th><th style="width:50px">N/A</th></tr></thead>
+            <tbody>
+              <tr><td class="cat-cell" rowspan="3">Moverse y trabajar</td><td class="desc-cell">Seguir procedimientos definidos para moverse a través de superficies en altura. Utilizar una pasarela sobre superficies de techos frágiles.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">No subir o encaramarse en las barandas.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">No lanzar o dejar caer ningún material desde las plataformas de trabajo o techos; ¡en su lugar se deben usar conductos de vaciado!</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="cat-cell">Cerrar aberturas</td><td class="desc-cell">Cubrir inmediatamente cualquier abertura. Asegurar las cubiertas para que no se resbalen.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="cat-cell" rowspan="2">EPP</td><td class="desc-cell">Usar casco con barbiquejo, zapatos de seguridad, antiparras, protector solar (si aplica).</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="desc-cell">Usar Arnés de seguridad con 2 cabos de vida.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+              <tr><td class="cat-cell">Finalización del trabajo</td><td class="desc-cell">Sacar a todas las personas, herramientas y materiales de altura.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn active-si" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px">
+            <div class="nf-field">
+              <label>Precauciones adicionales y EPP requeridos:</label>
+              <textarea placeholder="Ingrese precauciones adicionales específicas para este trabajo…">Protector auditivo durante uso de taladro. Sistema de comunicación radial entre trabajadores en altura y vigía a nivel de piso.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 6: CERTIFICACIÓN Y ACEPTACIÓN -->
+        <div class="nf-section">
+          <div class="sig-grid">
+            <div class="sig-box">
+              <div class="sig-box-title">CERTIFICACIÓN por el Emisor de Permiso de trabajo</div>
+              <div class="sig-box-desc">Yo certifico que: a) He visitado el área de trabajo, revisado el trabajo y los riesgos involucrados junto con la Autoridad en Realización; b) Los controles establecidos en este PTS permitirán realizar el trabajo de forma segura; c) Las medidas previas al permiso han sido implementadas; y d) La Autoridad en realización comprende los controles requeridos y es capaz de implementarlos.</div>
+              <div class="sig-field-row">
+                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" value="Juan Sepúlveda Mora"></div>
+              </div>
+              <div class="sig-field-row">
+                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Clic para firmar digitalmente</div></div>
+                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" value="03/06/2026 08:45"></div>
+              </div>
+            </div>
+            <div class="sig-box">
+              <div class="sig-box-title">ACEPTACIÓN por la Autoridad en Realización</div>
+              <div class="sig-box-desc">Yo certifico que: a) El trabajo sea realizado dentro de los límites descritos; b) Los controles son seguidos por todos los trabajadores; c) Todos los trabajadores comprenden los riesgos; d) Si cualquier requisito cambia o hay un incidente, el trabajo será detenido.</div>
+              <div class="sig-field-row">
+                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" value="Pedro Morales Castro"></div>
+              </div>
+              <div class="sig-field-row">
+                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Clic para firmar digitalmente</div></div>
+                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" value="03/06/2026 08:52"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VISITAS DE INSPECCIÓN -->
+        <div class="nf-section">
+          <div class="nf-section-header" style="text-align:center">VISITAS DE INSPECCIÓN (Durante el trabajo)</div>
+          <table class="insp-table">
+            <thead><tr><th style="width:160px">Nombre</th><th style="width:80px">Hora</th><th style="width:120px">Firma</th><th>Comentarios</th></tr></thead>
+            <tbody>
+              <tr><td><input type="text" value="J. Sepúlveda"></td><td><input type="text" value="10:30"></td><td><input type="text" value="[Digital]"></td><td><input type="text" value="Todo conforme. Arneses bien instalados."></td></tr>
+              <tr><td><input type="text" placeholder="Nombre"></td><td><input type="text" placeholder="HH:MM"></td><td><input type="text" placeholder="Firma"></td><td><input type="text" placeholder="Comentarios de la visita…"></td></tr>
+              <tr><td><input type="text" placeholder="Nombre"></td><td><input type="text" placeholder="HH:MM"></td><td><input type="text" placeholder="Firma"></td><td><input type="text" placeholder="Comentarios de la visita…"></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PARTE 2 -->
+        <div class="part2-header">PARTE 2 — Completar esta parte cuando se ha terminado el trabajo</div>
+
+        <!-- MEDIDAS POSTERIORES -->
+        <div class="nf-section" style="padding-top:14px">
+          <div class="nf-section-header orange">MEDIDAS POSTERIORES AL PERMISO requeridas &nbsp;(Trabajos finales / dejar el área segura)</div>
+          <table class="prec-table">
+            <thead><tr><th style="width:160px">Restablecimiento del área</th><th>Medida</th><th style="width:50px">Sí</th><th style="width:50px">N/A</th></tr></thead>
+            <tbody>
+              <tr><td class="cat-cell">Restablecimiento del área</td><td class="desc-cell">Sacar barreras temporales a nivel de piso.</td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">Sí</button></div></td><td class="radio-cell"><div class="yn-group"><button class="yn-btn" onclick="ynToggle(this)">N/A</button></div></td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:10px">
+            <div class="nf-field">
+              <label>Medidas posteriores al permiso adicionales requeridas:</label>
+              <textarea placeholder="Describa medidas adicionales de cierre…"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- CIERRE Y CONOCIMIENTO -->
+        <div class="nf-section">
+          <div class="sig-grid">
+            <div class="sig-box" style="border-color:var(--green-mid)">
+              <div class="sig-box-title" style="color:var(--green)">CIERRE por parte del Emisor de PTS</div>
+              <div class="sig-box-desc">Declaro este PTS cerrado. No se realizarán más trabajos en altura, las medidas posteriores al permiso establecidas anteriormente son suficientes.</div>
+              <div class="sig-field-row">
+                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" placeholder="Nombre del Emisor"></div>
+              </div>
+              <div class="sig-field-row">
+                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Firmar cierre</div></div>
+                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" placeholder="DD/MM/YYYY HH:MM"></div>
+              </div>
+            </div>
+            <div class="sig-box" style="border-color:var(--green-mid)">
+              <div class="sig-box-title" style="color:var(--green)">CONOCIMIENTO por parte de Autoridad en Realización</div>
+              <div class="sig-box-desc">Estoy en conocimiento que este PTS ya no es válido. He hecho el área de trabajo segura y he comunicado el cierre del PTS a todos los miembros del equipo.</div>
+              <div class="sig-field-row">
+                <div class="sig-field"><label>Nombre (Imprenta)</label><input type="text" placeholder="Nombre Autoridad Realización"></div>
+              </div>
+              <div class="sig-field-row">
+                <div class="sig-field" style="flex:2"><label>Firma (digital)</label><div style="border:1.5px dashed #ccc;border-radius:4px;height:40px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#999;cursor:pointer;background:#f9f9f9" onclick="showModal('firmaModal')">✏ Firmar conocimiento</div></div>
+                <div class="sig-field" style="flex:1"><label>Fecha y hora</label><input type="text" placeholder="DD/MM/YYYY HH:MM"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER NESTLE -->
+        <div class="nestle-ref">Entregar Original a SHE, copia de color Azul al Emisor y Copia Color Amarilla para Autoridad de Realización &nbsp;|&nbsp; Versión 2.0 - 10/2016 &nbsp;|&nbsp; REC-SHE-02-02</div>
+
+        <!-- ACTIONS -->
+        <div style="padding:16px 24px;background:var(--gray-light);border-top:1px solid var(--gray-med);display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn btn-outline" onclick="navigate('permisos')">← Volver</button>
+          <button class="btn btn-outline">💾 Guardar Borrador</button>
+          <button class="btn btn-nestle" onclick="showModal('emitirModal')">✓ Emitir y Aceptar PTS</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== CONTRATISTAS ====== -->
+    <div class="screen" id="screen-contratistas">
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Empresa</th><th>RUT</th><th>Contacto</th><th>Habilitación</th><th>Estado</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Manuales Ltda.</strong></td><td>76.123.456-7</td><td>g.mena@manuales.cl</td><td><span class="badge badge-green">✓ Vigente dic 2026</span></td><td><span class="badge badge-green">Activo</span></td></tr>
+              <tr><td><strong>TecnoServ S.A.</strong></td><td>77.654.321-0</td><td>ops@tecnoserv.cl</td><td><span class="badge badge-yellow">⚠ Vence en 22 días</span></td><td><span class="badge badge-green">Activo</span></td></tr>
+              <tr><td><strong>CivTec Obras SpA</strong></td><td>76.999.888-5</td><td>jefe@civtec.cl</td><td><span class="badge badge-green">✓ Vigente sep 2026</span></td><td><span class="badge badge-green">Activo</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== REPORTES ====== -->
+    <div class="screen" id="screen-reportes">
+      <div class="kpi-grid" style="margin-bottom:20px">
+        <div class="kpi-card blue"><div class="kpi-icon">📋</div><div class="kpi-num">142</div><div class="kpi-label">Total PT emitidos</div></div>
+        <div class="kpi-card green"><div class="kpi-icon">⏱</div><div class="kpi-num">94%</div><div class="kpi-label">Cerrados a tiempo</div></div>
+        <div class="kpi-card yellow"><div class="kpi-icon">🔄</div><div class="kpi-num">18 min</div><div class="kpi-label">Tiempo prom. aprobación</div></div>
+        <div class="kpi-card red"><div class="kpi-icon">✕</div><div class="kpi-num">7</div><div class="kpi-label">PT rechazados</div></div>
+      </div>
+      <div class="card">
+        <div class="section-title" style="margin-bottom:14px">Log de Auditoría</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Timestamp</th><th>Permiso</th><th>Usuario</th><th>Acción</th><th>Estado Anterior</th><th>Estado Nuevo</th></tr></thead>
+            <tbody>
+              <tr><td>03/06 08:52:11</td><td>PT-0089</td><td>P. Morales (Contratista)</td><td>ACEPTACIÓN_FIRMADA</td><td>SUBMITTED</td><td>APPROVED</td></tr>
+              <tr><td>03/06 08:45:00</td><td>PT-0089</td><td>J. Sepúlveda</td><td>CERTIFICACIÓN_FIRMADA</td><td>UNDER_REVIEW</td><td>APPROVED</td></tr>
+              <tr><td>03/06 08:30:05</td><td>PT-0089</td><td>J. Sepúlveda</td><td>REVIEW_START</td><td>SUBMITTED</td><td>UNDER_REVIEW</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="emitirModal">
+  <div class="modal-box">
+    <div class="modal-title">✓ Emitir y Aceptar PTS</div>
+    <div class="alert-banner alert-success" style="margin-bottom:16px"><span>✓</span> Checklist completo · Control de presión OK · Sin bloqueantes críticos</div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px">Al emitir este PTS, certifica que todas las condiciones previas han sido verificadas y el trabajo puede ejecutarse de forma segura.</p>
+    <div class="form-group">
+      <label>PIN de firma digital (6 dígitos)</label>
+      <input type="password" placeholder="······" maxlength="6" style="letter-spacing:6px;font-size:18px;text-align:center">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal('emitirModal')">Cancelar</button>
+      <button class="btn btn-nestle" style="flex:1" onclick="closeModal('emitirModal');alert('PTS PT-2026-0089 emitido correctamente. PDF generado y enviado a SHE y Autoridad de Realización.')">Firmar y Emitir PTS</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="firmaModal">
+  <div class="modal-box">
+    <div class="modal-title">✏ Firma Digital</div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px">Ingrese su PIN de seguridad para firmar digitalmente este documento.</p>
+    <div style="background:var(--gray-light);border:2px dashed var(--gray-med);border-radius:8px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:12px;color:var(--text-light)">O use huella dactilar en dispositivo móvil</div>
+    <div class="form-group"><label>PIN (6 dígitos)</label><input type="password" placeholder="······" maxlength="6" style="letter-spacing:6px;font-size:18px;text-align:center"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal('firmaModal')">Cancelar</button>
+      <button class="btn btn-success" style="flex:1" onclick="closeModal('firmaModal')">✓ Confirmar Firma</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="notifModal">
+  <div class="modal-box" style="max-width:380px">
+    <div class="modal-title">🔔 Notificaciones</div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div style="padding:12px 0;border-bottom:1px solid var(--gray-med)"><div style="display:flex;gap:8px"><span style="font-size:18px">⚠️</span><div><div style="font-size:13px;font-weight:600">PT-0089 vence en 1h 30min</div><div style="font-size:11px;color:var(--text-light)">Trabajo en Altura · Planta Norte</div></div></div></div>
+      <div style="padding:12px 0"><div style="display:flex;gap:8px"><span style="font-size:18px">📋</span><div><div style="font-size:13px;font-weight:600">PT-0092 esperando tu revisión</div><div style="font-size:11px;color:var(--text-light)">CivTec Obras · Hace 28 min</div></div></div></div>
+    </div>
+    <button class="btn btn-outline" style="width:100%;margin-top:16px" onclick="closeModal('notifModal')">Cerrar</button>
+  </div>
+</div>
+
+<script>
+const screens = { dashboard:'Dashboard', permisos:'Permisos de Trabajo', nuevo:'PT Trabajo en Altura – REC-SHE-02-02', contratistas:'Gestión de Contratistas', reportes:'Reportes y Auditoría' };
+
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('screen-' + screen);
+  if (el) el.classList.add('active');
+  document.getElementById('topbar-title').textContent = screens[screen] || screen;
+  document.querySelectorAll('.nav-item').forEach(item => {
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + screen + "'")) item.classList.add('active');
+  });
+  document.getElementById('content').scrollTo(0, 0);
+}
+
+function showModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); }));
+
+function ynToggle(btn) {
+  const cell = btn.closest('td');
+  cell.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active-si','active-no','active-na'));
+  const txt = btn.textContent.trim();
+  if (txt === 'Sí') btn.classList.add('active-si');
+  else if (txt === 'No') btn.classList.add('active-no');
+  else btn.classList.add('active-na');
+}
+
+function toggleYN(btn) {
+  const row = btn.parentElement;
+  row.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active-si','active-no'));
+  btn.classList.add(btn.textContent === 'Sí' ? 'active-si' : 'active-no');
+}
+
+window.addEventListener('load', function() {
+  const ctx1 = document.getElementById('chartTipo');
+  if (ctx1) new Chart(ctx1, { type:'bar', data:{ labels:['Altura','Esp. Confinado','Hot Work','Eléctrico','Excavación','Energías Pel.'], datasets:[{label:'Permisos',data:[38,22,29,18,25,10],backgroundColor:['#4472C4','#ED7D31','#A9311A','#7030A0','#FFC000','#375623'],borderRadius:6}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#F0F0F0'}},x:{grid:{display:false}}}}});
+  const ctx2 = document.getElementById('chartEstado');
+  if (ctx2) new Chart(ctx2, { type:'doughnut', data:{ labels:['Activos','Aprobados','En Revisión','Completados','Rechazados'], datasets:[{data:[8,5,3,24,7],backgroundColor:['#70AD47','#4472C4','#FFC000','#375623','#C0392B'],borderWidth:2,borderColor:'#fff'}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}},cutout:'65%'}});
+});
+</script>
+</body>
+</html>
